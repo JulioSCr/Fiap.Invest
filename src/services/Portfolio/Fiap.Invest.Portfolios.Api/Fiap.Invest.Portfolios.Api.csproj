@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fiap.Invest.Portfolio.Infraestructure\Fiap.Invest.Portfolios.Infraestructure.csproj" />
+    <ProjectReference Include="..\Fiap.Invest.Portfolios.Infraestructure\Fiap.Invest.Portfolios.Infraestructure.csproj" />
   </ItemGroup>
 
 </Project>

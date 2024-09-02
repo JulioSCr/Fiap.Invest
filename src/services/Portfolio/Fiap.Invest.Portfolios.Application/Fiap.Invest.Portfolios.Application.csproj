@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fiap.Invest.Portfolio.Domain\Fiap.Invest.Portfolios.Domain.csproj" />
+    <ProjectReference Include="..\Fiap.Invest.Portfolios.Domain\Fiap.Invest.Portfolios.Domain.csproj" />
   </ItemGroup>
 
 </Project>

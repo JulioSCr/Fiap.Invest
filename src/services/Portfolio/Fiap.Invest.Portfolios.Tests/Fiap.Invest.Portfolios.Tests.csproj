@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fiap.Invest.Portfolio.Api\Fiap.Invest.Portfolios.Api.csproj" />
+    <ProjectReference Include="..\Fiap.Invest.Portfolios.Api\Fiap.Invest.Portfolios.Api.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -19,9 +19,9 @@ public class PortfolioServiceTests
         _mocker = new AutoMocker();
     }
 
-    [Fact(DisplayName = "PortfolioService Quando Portfólio Válido Deve Gravar Retornar Portfólio Com Dados Inseridos")]
+    [Fact(DisplayName = "CriarPortfolioAsync Quando Portfólio Válido Deve Gravar Retornar Portfólio Com Dados Inseridos")]
     [Trait("Categoria", "PortfolioService")]
-    public async Task PortfolioService_QuandoPortfolioValido_DeveGravarERetornarPortfolioComDadosInseridos()
+    public async Task CriarPortfolioAsync_QuandoPortfolioValido_DeveGravarERetornarPortfolioComDadosInseridos()
     {
         // Arrange
         var inputData = new PortfolioInputModel
@@ -47,12 +47,12 @@ public class PortfolioServiceTests
         Assert.Equal(inputData.Descricao, resultado.Descricao.Valor);
         Assert.NotEqual(Guid.Empty, resultado.Id);
         portfolioRepository
-            .Verify(repo => repo.Gravar(It.IsAny<Portfolio>()), Times.Once);
+            .Verify(repo => repo.Add(It.IsAny<Portfolio>()), Times.Once);
     }
 
-    [Fact(DisplayName = "PortfolioService Quando Portfólio Com Mesmo Nome Para Mesmo Usuario Deve Retornar Exceção")]
+    [Fact(DisplayName = "CriarPortfolioAsync Quando Portfólio Com Mesmo Nome Para Mesmo Usuario Deve Retornar Exceção")]
     [Trait("Categoria", "PortfolioService")]
-    public async Task PortfolioService_QuandoPortfolioComMesmoNomeParaMesmoUsuario_DeveRetornarExcecao()
+    public async Task CriarPortfolioAsync_QuandoPortfolioComMesmoNomeParaMesmoUsuario_DeveRetornarExcecao()
     {
         // Arrange
         var nome = new NomePortfolio("Renda variável");

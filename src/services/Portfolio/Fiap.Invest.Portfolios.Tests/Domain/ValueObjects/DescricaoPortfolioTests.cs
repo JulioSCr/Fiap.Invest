@@ -5,11 +5,11 @@ namespace Fiap.Invest.Portfolios.Tests.Domain.ValueObjects
 {
     public class DescricaoPortfolioTests
     {
-        private readonly Faker _facker;
+        private readonly Faker _faker;
 
         public DescricaoPortfolioTests()
         {
-            _facker = new Faker("pt_BR");
+            _faker = new Faker("pt_BR");
         }
 
         [Fact(DisplayName = "Construtor Quando Descrição Maior Que Tamanho Máximo Deve Gerar Exceção")]
@@ -17,7 +17,7 @@ namespace Fiap.Invest.Portfolios.Tests.Domain.ValueObjects
         public void Construtor_QuandoDescricaoMaiorQueTamanhoMaximo_DeveGerarExcecao()
         {
             // Arrange
-            var nome = _facker.Random.AlphaNumeric(DescricaoPortfolio.TamanhoMaximo + 1);
+            var nome = _faker.Random.AlphaNumeric(DescricaoPortfolio.TamanhoMaximo + 1);
             var mensagem = $"Descrição deve conter no máximo {DescricaoPortfolio.TamanhoMaximo} caracteres.";
 
             // Act
@@ -46,12 +46,12 @@ namespace Fiap.Invest.Portfolios.Tests.Domain.ValueObjects
             Assert.Null(descricao.Valor);
         }
 
-        [Fact(DisplayName = "Construtor Quando Descrição Menor Igual Ao Valor Máximo Deve Gerar")]
+        [Fact(DisplayName = "Construtor Quando Descrição Menor Igual Ao Valor Máximo Deve Gerar Objeto")]
         [Trait("Categoria", "DescricaoPortfolio")]
-        public void Construtor_QuandoDescricaoMenorIgualAoValorMaximo_DeveGerar()
+        public void Construtor_QuandoDescricaoMenorIgualAoValorMaximo_DeveGerarObjeto()
         {
             // Arrange
-            var nome = _facker.Random.AlphaNumeric(_facker.Random.Int(min: 1, max: DescricaoPortfolio.TamanhoMaximo));
+            var nome = _faker.Random.AlphaNumeric(_faker.Random.Int(min: 1, max: DescricaoPortfolio.TamanhoMaximo));
 
             // Act
             var descricao = new DescricaoPortfolio(nome);
@@ -61,30 +61,30 @@ namespace Fiap.Invest.Portfolios.Tests.Domain.ValueObjects
             Assert.NotNull(descricao.Valor);
         }
 
-        [Fact(DisplayName = "ObterInconsitencias Quando Descrição Maior Que Tamanho Máximo Deve Gerar Inconsisistência")]
+        [Fact(DisplayName = "ObterInconsistencias Quando Descrição Maior Que Tamanho Máximo Deve Gerar Inconsisistência")]
         [Trait("Categoria", "DescricaoPortfolio")]
-        public void ObterInconsitencias_QuandoDescricaoMaiorQueTamanhoMaximo_DeveGerarInconsisistencia()
+        public void ObterInconsistencias_QuandoDescricaoMaiorQueTamanhoMaximo_DeveGerarInconsisistencia()
         {
             // Arrange
-            var nome = _facker.Random.AlphaNumeric(DescricaoPortfolio.TamanhoMaximo + 1);
+            var nome = _faker.Random.AlphaNumeric(DescricaoPortfolio.TamanhoMaximo + 1);
             var mensagem = $"Descrição deve conter no máximo {DescricaoPortfolio.TamanhoMaximo} caracteres.";
 
             // Act
-            var erro = DescricaoPortfolio.ObterInconsitencias(nome);
+            var erro = DescricaoPortfolio.ObterInconsistencias(nome);
 
             // Assert
             Assert.Equal(mensagem, erro);
         }
 
-        [Fact(DisplayName = "ObterInconsitencias Quando Descrição Menor Igual Ao Valor Máximo Deve Retornar Nulo")]
+        [Fact(DisplayName = "ObterInconsistencias Quando Descrição Menor Igual Ao Valor Máximo Deve Retornar Nulo")]
         [Trait("Categoria", "DescricaoPortfolio")]
-        public void ObterInconsitencias_QuandoDescricaoMenorIgualAoValorMaximo_DeveRetornarNulo()
+        public void ObterInconsistencias_QuandoDescricaoMenorIgualAoValorMaximo_DeveRetornarNulo()
         {
             // Arrange
-            var nome = _facker.Random.AlphaNumeric(_facker.Random.Int(min: 1, max: DescricaoPortfolio.TamanhoMaximo));
+            var nome = _faker.Random.AlphaNumeric(_faker.Random.Int(min: 1, max: DescricaoPortfolio.TamanhoMaximo));
 
             // Act
-            var erro = DescricaoPortfolio.ObterInconsitencias(nome);
+            var erro = DescricaoPortfolio.ObterInconsistencias(nome);
 
             // Assert
             Assert.Null(erro);

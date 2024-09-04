@@ -1,10 +1,10 @@
-﻿using Fiap.Invest.Portfolios.Domain.ValueObjects;
+﻿using Delivery.Core.DomainObjects;
+using Fiap.Invest.Portfolios.Domain.ValueObjects;
 
 namespace Fiap.Invest.Portfolios.Domain.Entities
 {
-    public record Portfolio
+    public class Portfolio : Entity, IAggregateRoot
     {
-        public Guid Id { get; private set; }
         public Guid UsuarioId { get; private set; }
         public NomePortfolio Nome { get; private set; }
         public DescricaoPortfolio Descricao { get; private set; }

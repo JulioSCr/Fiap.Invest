@@ -5,7 +5,7 @@ using Fiap.Invest.Portfolios.Domain.Interfaces.Repositories;
 
 namespace Fiap.Invest.Portfolios.Application.Services;
 
-public sealed class PortfolioService
+public sealed class PortfolioService : IPortfolioService
 {
     private readonly IPortfolioRepository _portfolioRepository;
 
@@ -24,7 +24,7 @@ public sealed class PortfolioService
         if (portfolios.Any(p => p.Nome == portfolio.Nome))
             throw new InvalidOperationException($"Portfólio de nome \"{portfolio.Nome}\" já existe.");
 
-        _portfolioRepository.Gravar(portfolio);
+        await _portfolioRepository.Add(portfolio);
         return portfolio;
     }
 }

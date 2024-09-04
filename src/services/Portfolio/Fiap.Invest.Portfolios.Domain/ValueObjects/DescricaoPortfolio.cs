@@ -8,7 +8,7 @@
 
         public DescricaoPortfolio(string? descricaoPortfolio)
         {
-            var inconsistencias = ObterInconsitencias(descricaoPortfolio);
+            var inconsistencias = ObterInconsistencias(descricaoPortfolio);
 
             if (!string.IsNullOrWhiteSpace(inconsistencias))
                 throw new InvalidOperationException(inconsistencias);
@@ -16,7 +16,7 @@
             Valor = descricaoPortfolio?.Trim();
         }
 
-        public static string? ObterInconsitencias(string? descricaoPortfolio)
+        public static string? ObterInconsistencias(string? descricaoPortfolio)
         {
             if (descricaoPortfolio?.Length > TamanhoMaximo)
                 return $"Descrição deve conter no máximo {TamanhoMaximo} caracteres.";

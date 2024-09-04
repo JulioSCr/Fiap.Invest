@@ -1,44 +1,31 @@
-var builder = WebApplication.CreateBuilder(args);
+using Fiap.Invest.Portfolios.Api.Configuration;
+using Delivery.WebAPI.Configuration;
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+namespace Fiap.Invest.Portfolios.Api;
+public static class Program
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    [ExcludeFromCodeCoverage]
+    public static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
 
-app.UseHttpsRedirection();
+        builder.Services.AddApiConfiguration(builder.Configuration);
+        builder.Services.AddSwaggerConfiguration(new(
+                "Portfólio API",
+                "Esta API faz parte do projeto Fiap Invest, projeto em grupo de alunos da FIAP",
+                $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
+        builder.Services.RegisterServices();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+        builder.Services.RegisterServices();
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
+        var app = builder.Build();
 
-app.Run();
+        app.UseSwaggerConfiguration();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        app.UseApiConfiguration(app.Environment);
+
+        app.Run();
+    }
 }

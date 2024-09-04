@@ -7,11 +7,11 @@ namespace Fiap.Invest.Portfolios.Tests.Domain.ValueObjects
     [ExcludeFromCodeCoverage]
     public class NomePortfolioTests
     {
-        private readonly Faker _facker;
+        private readonly Faker _faker;
 
         public NomePortfolioTests()
         {
-            _facker = new Faker("pt_BR");
+            _faker = new Faker("pt_BR");
         }
 
         [Fact(DisplayName = "Construtor Quando Nome Nulo Deve Gerar Exceção")]
@@ -37,7 +37,7 @@ namespace Fiap.Invest.Portfolios.Tests.Domain.ValueObjects
         public void Construtor_QuandoNomeMaiorQueTamanhoMaximo_DeveGerarExcecao()
         {
             // Arrange
-            var nomeFalso = _facker.Random.AlphaNumeric(NomePortfolio.TamanhoMaximo + 1);
+            var nomeFalso = _faker.Random.AlphaNumeric(NomePortfolio.TamanhoMaximo + 1);
             var mensagem = $"Nome do portfólio deve conter no máximo {NomePortfolio.TamanhoMaximo} caracteres.";
 
             // Act
@@ -56,7 +56,7 @@ namespace Fiap.Invest.Portfolios.Tests.Domain.ValueObjects
         public void Construtor_QuandoNomeMenorQueTamanhoMinimo_DeveGerarExcecao()
         {
             // Arrange
-            var nomeFalso = _facker.Random.AlphaNumeric(NomePortfolio.TamanhoMinimo - 1);
+            var nomeFalso = _faker.Random.AlphaNumeric(NomePortfolio.TamanhoMinimo - 1);
             var mensagem = $"Nome do portfólio deve conter no mínimo {NomePortfolio.TamanhoMinimo} caracteres.";
 
             // Act
@@ -70,12 +70,12 @@ namespace Fiap.Invest.Portfolios.Tests.Domain.ValueObjects
             Assert.Equal(mensagem, excecao.Message);
         }
 
-        [Fact(DisplayName = "Construtor Quando Nome Maior Igual Que Tamanho Mínimo E Menor Igual Ao Tamanho Máximo Deve Retornar Nulo")]
+        [Fact(DisplayName = "Construtor Quando Nome Maior Igual Que Tamanho Mínimo E Menor Igual Ao Tamanho Máximo Deve Gerar Objeto")]
         [Trait("Categoria", "NomePortfolio")]
-        public void Construtor_QuandoNomeMaiorIgualQueTamanhoMinimoEMenorIgualTamanhoMaximo_DeveRetornarNulo()
+        public void Construtor_QuandoNomeMaiorIgualQueTamanhoMinimoEMenorIgualTamanhoMaximo_DeveGerarObjeto()
         {
             // Arrange
-            var nomeFalso = _facker.Random.AlphaNumeric(_facker.Random.Int(min: NomePortfolio.TamanhoMinimo, max: NomePortfolio.TamanhoMaximo));
+            var nomeFalso = _faker.Random.AlphaNumeric(_faker.Random.Int(min: NomePortfolio.TamanhoMinimo, max: NomePortfolio.TamanhoMaximo));
 
             // Act
             var nome = new NomePortfolio(nomeFalso);
@@ -104,7 +104,7 @@ namespace Fiap.Invest.Portfolios.Tests.Domain.ValueObjects
         public void ObterInconsistencias_QuandoNomeMaiorQueTamanhoMaximo_DeveGerarInconsitencia()
         {
             // Arrange
-            var nomeFalso = _facker.Random.AlphaNumeric(DescricaoPortfolio.TamanhoMaximo + 1);
+            var nomeFalso = _faker.Random.AlphaNumeric(DescricaoPortfolio.TamanhoMaximo + 1);
             var mensagem = $"Nome do portfólio deve conter no máximo {NomePortfolio.TamanhoMaximo} caracteres.";
 
             // Act
@@ -119,7 +119,7 @@ namespace Fiap.Invest.Portfolios.Tests.Domain.ValueObjects
         public void ObterInconsistencias_QuandoNomeMenorQueTamanhoMinimo_DeveGerarInconsitencia()
         {
             // Arrange
-            var nomeFalso = _facker.Random.AlphaNumeric(NomePortfolio.TamanhoMinimo - 1);
+            var nomeFalso = _faker.Random.AlphaNumeric(NomePortfolio.TamanhoMinimo - 1);
             var mensagem = $"Nome do portfólio deve conter no mínimo {NomePortfolio.TamanhoMinimo} caracteres.";
 
             // Act
@@ -134,7 +134,7 @@ namespace Fiap.Invest.Portfolios.Tests.Domain.ValueObjects
         public void ObterInconsistencias_QuandoNomeMaiorIgualQueTamanhoMinimoEMenorIgualTamanhoMaximo_DeveRetornarNulo()
         {
             // Arrange
-            var nomeFalso = _facker.Random.AlphaNumeric(_facker.Random.Int(min: NomePortfolio.TamanhoMinimo, max: NomePortfolio.TamanhoMaximo));
+            var nomeFalso = _faker.Random.AlphaNumeric(_faker.Random.Int(min: NomePortfolio.TamanhoMinimo, max: NomePortfolio.TamanhoMaximo));
 
             // Act
             var erro = NomePortfolio.ObterInconsistencias(nomeFalso);

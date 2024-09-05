@@ -1,4 +1,5 @@
 using Fiap.Invest.Portfolios.Api.Controllers;
+using Fiap.Invest.Portfolios.Application.DTOs;
 using Fiap.Invest.Portfolios.Application.InputModels;
 using Fiap.Invest.Portfolios.Application.Services;
 using Fiap.Invest.Portfolios.Domain.Entities;
@@ -44,5 +45,25 @@ public class PortfolioControllerTests
         // Assert
         var noContentResult = Assert.IsType<NoContentResult>(resultado);
         Assert.Equal(204, noContentResult.StatusCode);
+    }
+
+    [Fact(DisplayName = "ListarPortfolioPorUsuario Quando Requisição Válida Deve Retornar Ok")]
+    [Trait("Categoria", "PortfolioController")]
+    public async Task ListarPortfolioPorUsuario_QuandoRequisicaoValida_DeveRetornarOk()
+    {
+        // Arrange
+        var portfolioService = _mocker.GetMock<IPortfolioService>();
+        portfolioService
+            .Setup(service => service.ListarPorUsuarioAsync(It.IsAny<Guid>()))
+            .ReturnsAsync([]);
+        var controller = new PortfolioController(portfolioService.Object);
+
+        // Act
+        var resultado = await controller.ListarPortfolioPorUsuario(Guid.NewGuid());
+
+        // Assert
+        var okObjectResult = Assert.IsType<OkObjectResult>(resultado);
+        Assert.Equal(200, okObjectResult.StatusCode);
+        Assert.IsType<List<PortfolioDTO>>(okObjectResult.Value);
     }
 }

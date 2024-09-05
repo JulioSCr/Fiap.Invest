@@ -1,3 +1,4 @@
+using Fiap.Invest.Portfolios.Application.DTOs;
 using Fiap.Invest.Portfolios.Application.InputModels;
 using Fiap.Invest.Portfolios.Application.Services;
 using Fiap.Invest.Portfolios.Domain.Entities;
@@ -33,7 +34,7 @@ public class PortfolioServiceTests
 
         var portfolioRepository = _mocker.GetMock<IPortfolioRepository>();
         portfolioRepository
-            .Setup(repo => repo.ObterPorUsuarioAsync(It.IsAny<Guid>()))
+            .Setup(repo => repo.GetByUsuarioAsync(It.IsAny<Guid>()))
             .ReturnsAsync([]);
         var service = new PortfolioService(portfolioRepository.Object);
 
@@ -67,7 +68,7 @@ public class PortfolioServiceTests
         };
         var portfolioRepository = _mocker.GetMock<IPortfolioRepository>();
         portfolioRepository
-            .Setup(repo => repo.ObterPorUsuarioAsync(It.IsAny<Guid>()))
+            .Setup(repo => repo.GetByUsuarioAsync(It.IsAny<Guid>()))
             .ReturnsAsync([portfolio]);
         var service = new PortfolioService(portfolioRepository.Object);
 
@@ -77,5 +78,22 @@ public class PortfolioServiceTests
         // Assert
         var excecao = await Assert.ThrowsAsync<InvalidOperationException>(erro);
         Assert.Equal(mensagem, excecao.Message);
+    }
+
+    [Fact(DisplayName = "ListarPorUsuarioAsync Quando Requisitado Deve Retornar Lista De PortfolioDTO")]
+    [Trait("Categoria", "PortfolioService")]
+    public async Task ListarPorUsuarioAsync_QuandoRequisitado_DeveRetornarListaDePortfolioDTO()
+    {
+        var portfolioRepository = _mocker.GetMock<IPortfolioRepository>();
+        portfolioRepository
+            .Setup(repo => repo.GetByUsuarioAsync(It.IsAny<Guid>()))
+            .ReturnsAsync([]);
+        var service = new PortfolioService(portfolioRepository.Object);
+
+        // Act
+        var portfolios = await service.ListarPorUsuarioAsync(Guid.NewGuid());
+
+        // Assert
+        Assert.IsType<List<PortfolioDTO>>(portfolios);
     }
 }

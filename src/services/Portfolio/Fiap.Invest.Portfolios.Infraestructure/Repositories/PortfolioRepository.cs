@@ -16,10 +16,10 @@ public sealed class PortfolioRepository : IPortfolioRepository
 
     public IUnitOfWork UnitOfWork => _context;
 
-    public async Task<List<Portfolio>> ObterPorUsuarioAsync(Guid UsuarioId)
+    public async Task<List<Portfolio>> GetByUsuarioAsync(Guid usuarioId)
     {
         return await _context.Portfolios.AsNoTracking()
-            .Where(p => p.UsuarioId == UsuarioId).ToListAsync();
+            .Where(p => p.UsuarioId == usuarioId).ToListAsync();
     }
 
     public async Task<Portfolio> GetById(Guid id)

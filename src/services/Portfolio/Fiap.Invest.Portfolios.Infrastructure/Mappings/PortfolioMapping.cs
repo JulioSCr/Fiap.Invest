@@ -1,9 +1,9 @@
 using Fiap.Invest.Portfolios.Domain.Entities;
-using Fiap.Invest.Portfolios.Infraestructure.ValueConversion;
+using Fiap.Invest.Portfolios.Infrastructure.ValueConversion;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Fiap.Invest.Portfolios.Infraestructure.Mappings;
+namespace Fiap.Invest.Portfolios.Infrastructure.Mappings;
 public class PortfolioMapping : IEntityTypeConfiguration<Portfolio>
 {
     public void Configure(EntityTypeBuilder<Portfolio> builder)

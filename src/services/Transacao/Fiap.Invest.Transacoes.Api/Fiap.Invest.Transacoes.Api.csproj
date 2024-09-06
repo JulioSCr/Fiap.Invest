@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fiap.Invest.Portfolios.Infrastructure\Fiap.Invest.Portfolios.Infrastructure.csproj" />
+    <ProjectReference Include="..\Fiap.Invest.Transacoes.Infrastructure\Fiap.Invest.Transacoes.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

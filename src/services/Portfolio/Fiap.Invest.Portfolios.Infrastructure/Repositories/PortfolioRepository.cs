@@ -1,10 +1,10 @@
 using Delivery.Core.Data;
 using Fiap.Invest.Portfolios.Domain.Entities;
 using Fiap.Invest.Portfolios.Domain.Interfaces.Repositories;
-using Fiap.Invest.Portfolios.Infraestructure.Context;
+using Fiap.Invest.Portfolios.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
-namespace Fiap.Invest.Portfolios.Infraestructure.Repositories;
+namespace Fiap.Invest.Portfolios.Infrastructure.Repositories;
 public sealed class PortfolioRepository : IPortfolioRepository
 {
     private readonly PortfolioContext _context;

@@ -1,5 +1,5 @@
 using Delivery.Core.DatabaseFlavor;
-using Fiap.Invest.Portfolios.Infraestructure.Context;
+using Fiap.Invest.Portfolios.Infrastructure.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;

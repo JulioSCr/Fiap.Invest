@@ -2,9 +2,11 @@ using Delivery.Core.Data;
 using Delivery.Core.Messages;
 using FluentValidation.Results;
 using Fiap.Invest.Portfolios.Domain.Entities;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 
-namespace Fiap.Invest.Portfolios.Infraestructure.Context;
+namespace Fiap.Invest.Portfolios.Infrastructure.Context;
+[ExcludeFromCodeCoverage]
 public sealed class PortfolioContext : DbContext, IUnitOfWork
 {
     public PortfolioContext(DbContextOptions<PortfolioContext> options) : base(options) { }

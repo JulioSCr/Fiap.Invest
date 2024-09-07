@@ -30,9 +30,13 @@ public class AtivoController : MainController
             if (ativo == null) return CustomResponse();
             return CustomResponse(ativo);
         }
-        catch (Exception ex) when (ex is FiapInvestApplicationException || ex is DomainException || ex is DataNotFoundException)
+        catch (Exception ex) when (ex is FiapInvestApplicationException || ex is DomainException)
         {
             AddErrorToStack(ex.ToString());
+            return CustomResponse();
+        }
+        catch (DataNotFoundException)
+        {
             return CustomResponse();
         }
     }

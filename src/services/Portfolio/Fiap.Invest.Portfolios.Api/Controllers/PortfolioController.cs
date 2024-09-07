@@ -17,6 +17,27 @@ public sealed class PortfolioController : MainController
         _service = service;
     }
 
+    [HttpGet("{usuarioId}")]
+    [ProducesResponseType(typeof(List<PortfolioDTO>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> ListarPortfolioPorUsuario(Guid usuarioId)
+    {
+        try
+        {
+            return CustomResponse(await _service.ListarPorUsuarioAsync(usuarioId));
+        }
+        catch (Exception ex) when (ex is FiapInvestApplicationException || ex is DomainException)
+        {
+            AddErrorToStack(ex.ToString());
+            return CustomResponse();
+        }
+        catch (DataNotFoundException)
+        {
+            return CustomResponse();
+        }
+    }
+
     [HttpPost()]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -27,23 +48,6 @@ public sealed class PortfolioController : MainController
         {
             await _service.CriarPortfolioAsync(model);
             return Created();
-        }
-        catch (Exception ex) when (ex is FiapInvestApplicationException || ex is DomainException || ex is DataNotFoundException)
-        {
-            AddErrorToStack(ex.ToString());
-            return CustomResponse();
-        }
-    }
-
-    [HttpGet("{usuarioId}")]
-    [ProducesResponseType(typeof(List<PortfolioDTO>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> ListarPortfolioPorUsuario(Guid usuarioId)
-    {
-        try
-        {
-            return CustomResponse(await _service.ListarPorUsuarioAsync(usuarioId));
         }
         catch (Exception ex) when (ex is FiapInvestApplicationException || ex is DomainException || ex is DataNotFoundException)
         {

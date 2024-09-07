@@ -10,7 +10,7 @@ using Moq;
 using Moq.AutoMock;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Fiap.Invest.Transacoes.Tests.Api;
+namespace Fiap.Invest.Transacoes.Tests.Api.Controllers;
 [ExcludeFromCodeCoverage]
 public class TransacaoControllerTests
 {

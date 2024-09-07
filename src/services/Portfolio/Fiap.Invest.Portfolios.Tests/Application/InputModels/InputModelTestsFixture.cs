@@ -1,6 +1,5 @@
 using Bogus;
 using Fiap.Invest.Portfolios.Application.InputModels;
-using Fiap.Invest.Portfolios.Domain.ValueObjects;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using DataAnnotationsValidationResult = System.ComponentModel.DataAnnotations.ValidationResult;

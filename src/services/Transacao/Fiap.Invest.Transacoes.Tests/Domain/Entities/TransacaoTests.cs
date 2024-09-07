@@ -1,3 +1,4 @@
+using Delivery.Core.DomainObjects;
 using Fiap.Invest.Transacoes.Domain.Entities;
 using Fiap.Invest.Transacoes.Domain.Enums;
 using System.Diagnostics.CodeAnalysis;
@@ -25,7 +26,7 @@ public class TransacaoTests
     public void Construtor_QuandoQuantidadeMenorQueMinimo_DeveGerarExcecao()
     {
         // Arrange
-        var mensagem = "Quantidade deve ser maior que zero.";
+        var mensagem = $"Quantidade deve ser pelo menos {Transacao.QuantidadeMinima}.";
 
         // Act
         var acaoExcecao = () =>
@@ -34,7 +35,7 @@ public class TransacaoTests
         };
 
         // Assert
-        var excecao = Assert.Throws<InvalidOperationException>(acaoExcecao);
+        var excecao = Assert.Throws<DomainException>(acaoExcecao);
         Assert.Equal(mensagem, excecao.Message);
     }
 
@@ -43,7 +44,7 @@ public class TransacaoTests
     public void Construtor_QuandoPrecoMenorQueMinimo_DeveGerarExcecao()
     {
         // Arrange
-        var mensagem = "Preço deve ser maior que zero.";
+        var mensagem = $"Preço deve ser pelo menos {Transacao.PrecoMinimo}.";
 
         // Act
         var acaoExcecao = () =>
@@ -52,7 +53,7 @@ public class TransacaoTests
         };
 
         // Assert
-        var excecao = Assert.Throws<InvalidOperationException>(acaoExcecao);
+        var excecao = Assert.Throws<DomainException>(acaoExcecao);
         Assert.Equal(mensagem, excecao.Message);
     }
 }

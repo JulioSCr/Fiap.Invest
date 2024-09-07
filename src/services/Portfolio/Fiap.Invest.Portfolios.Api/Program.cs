@@ -3,10 +3,9 @@ using Delivery.WebAPI.Configuration;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
-namespace Fiap.Invest.Portfolios.Api;
+[ExcludeFromCodeCoverage]
 public static class Program
 {
-    [ExcludeFromCodeCoverage]
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
@@ -16,8 +15,6 @@ public static class Program
                 "Portfólio API",
                 "Esta API faz parte do projeto Fiap Invest, projeto em grupo de alunos da FIAP",
                 $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
-        builder.Services.RegisterServices();
-
         builder.Services.RegisterServices();
 
         var app = builder.Build();

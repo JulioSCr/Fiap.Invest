@@ -6,6 +6,7 @@ public class Transacao : Entity, IAggregateRoot
 {
     public const int QuantidadeMinima = 1;
     public const decimal PrecoMinimo = 0.1M;
+    public const double PrecoMinimoDataAnnotation = 0.1D;
 
     public Guid PortfolioId { get; private set; }
     public Guid AtivoId { get; private set; }
@@ -17,10 +18,10 @@ public class Transacao : Entity, IAggregateRoot
     public Transacao(Guid portfolioId, Guid ativoId, ETipoTransacao tipo, int quantidade, decimal preco)
     {
         if (quantidade < QuantidadeMinima)
-            throw new InvalidOperationException("Quantidade deve ser maior que zero.");
+            throw new DomainException($"Quantidade deve ser pelo menos {QuantidadeMinima}.");
 
         if (preco < PrecoMinimo)
-            throw new InvalidOperationException("Preço deve ser maior que zero.");
+            throw new DomainException($"Preço deve ser pelo menos {PrecoMinimo}.");
 
         PortfolioId = portfolioId;
         AtivoId = ativoId;

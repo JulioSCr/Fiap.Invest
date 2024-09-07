@@ -1,4 +1,6 @@
 using Fiap.Invest.Transacoes.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Fiap.Invest.Transacoes.Infrastructure.Mappings;
 public class AtivoMapping : IEntityTypeConfiguration<Ativo>
@@ -11,13 +13,11 @@ public class AtivoMapping : IEntityTypeConfiguration<Ativo>
             .IsRequired();
 
         builder.Property(c => c.Nome)
-            .IsRequired()
-            .HasColumnType("varchar(20)");
+            .IsRequired();
 
         builder.Property(c => c.Codigo)
-            .IsRequired()
-            .HasConversion(new DescricaoPortfolioConverter());
+            .IsRequired();
 
-        builder.ToTable("Portfolios");
+        builder.ToTable("Ativos");
     }
 }

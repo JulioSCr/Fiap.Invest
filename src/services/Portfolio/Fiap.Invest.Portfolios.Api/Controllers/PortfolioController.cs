@@ -1,10 +1,10 @@
+using Delivery.Core.DomainObjects;
 using Delivery.WebAPI.Core.Controllers;
+using Fiap.Invest.Core.Exceptions;
 using Fiap.Invest.Portfolios.Application.DTOs;
 using Fiap.Invest.Portfolios.Application.InputModels;
 using Fiap.Invest.Portfolios.Application.Services;
-using Fiap.Invest.Portfolios.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Fiap.Invest.Portfolios.Api.Controllers;
 [Route("api/[Controller]")]
@@ -23,8 +23,16 @@ public sealed class PortfolioController : MainController
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CriarPortfolioAsync([FromBody] PortfolioInputModel model)
     {
-        await _service.CriarPortfolioAsync(model);
-        return CustomResponse();
+        try
+        {
+            await _service.CriarPortfolioAsync(model);
+            return CustomResponse();
+        }
+        catch (Exception ex) when (ex is FiapInvestApplicationException || ex is DomainException)
+        {
+            AddErrorToStack(ex.ToString());
+            return CustomResponse();
+        }
     }
 
     [HttpGet("{usuarioId}")]
@@ -32,5 +40,15 @@ public sealed class PortfolioController : MainController
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ListarPortfolioPorUsuario(Guid usuarioId)
-        => CustomResponse(await _service.ListarPorUsuarioAsync(usuarioId));
+    {
+        try
+        {
+            return CustomResponse(await _service.ListarPorUsuarioAsync(usuarioId));
+        }
+        catch (Exception ex) when (ex is FiapInvestApplicationException || ex is DomainException)
+        {
+            AddErrorToStack(ex.ToString());
+            return CustomResponse();
+        }
+    }
 }

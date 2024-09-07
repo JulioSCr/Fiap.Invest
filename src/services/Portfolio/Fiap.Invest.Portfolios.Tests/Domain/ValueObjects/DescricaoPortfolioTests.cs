@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using Delivery.Core.DomainObjects;
 using Fiap.Invest.Portfolios.Domain.ValueObjects;
 
 namespace Fiap.Invest.Portfolios.Tests.Domain.ValueObjects
@@ -27,7 +28,7 @@ namespace Fiap.Invest.Portfolios.Tests.Domain.ValueObjects
             });
 
             // Assert
-            var excecao = Assert.Throws<InvalidOperationException>(erro);
+            var excecao = Assert.Throws<DomainException>(erro);
             Assert.Equal(mensagem, excecao.Message);
         }
 

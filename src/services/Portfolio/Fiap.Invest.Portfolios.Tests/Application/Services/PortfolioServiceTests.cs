@@ -20,7 +20,7 @@ public class PortfolioServiceTests
         _mocker = new AutoMocker();
     }
 
-    [Fact(DisplayName = "CriarPortfolioAsync Quando Portfólio Válido Deve Gravar Retornar Portfólio Com Dados Inseridos")]
+    [Fact(DisplayName = "CriarPortfolioAsync Quando Portfólio Válido Deve Gravar E Retornar Portfólio Com Dados Inseridos")]
     [Trait("Categoria", "PortfolioService")]
     public async Task CriarPortfolioAsync_QuandoPortfolioValido_DeveGravarERetornarPortfolioComDadosInseridos()
     {
@@ -34,7 +34,7 @@ public class PortfolioServiceTests
 
         var portfolioRepository = _mocker.GetMock<IPortfolioRepository>();
         portfolioRepository
-            .Setup(repo => repo.GetByUsuarioAsync(It.IsAny<Guid>()))
+            .Setup(repo => repo.ListarPorUsuarioAsync(It.IsAny<Guid>()))
             .ReturnsAsync([]);
         var service = new PortfolioService(portfolioRepository.Object);
 
@@ -68,7 +68,7 @@ public class PortfolioServiceTests
         };
         var portfolioRepository = _mocker.GetMock<IPortfolioRepository>();
         portfolioRepository
-            .Setup(repo => repo.GetByUsuarioAsync(It.IsAny<Guid>()))
+            .Setup(repo => repo.ListarPorUsuarioAsync(It.IsAny<Guid>()))
             .ReturnsAsync([portfolio]);
         var service = new PortfolioService(portfolioRepository.Object);
 
@@ -76,7 +76,7 @@ public class PortfolioServiceTests
         var erro = (async () => { var resultado = await service.CriarPortfolioAsync(inputData); });
 
         // Assert
-        var excecao = await Assert.ThrowsAsync<InvalidOperationException>(erro);
+        var excecao = await Assert.ThrowsAsync<ApplicationException>(erro);
         Assert.Equal(mensagem, excecao.Message);
     }
 
@@ -86,7 +86,7 @@ public class PortfolioServiceTests
     {
         var portfolioRepository = _mocker.GetMock<IPortfolioRepository>();
         portfolioRepository
-            .Setup(repo => repo.GetByUsuarioAsync(It.IsAny<Guid>()))
+            .Setup(repo => repo.ListarPorUsuarioAsync(It.IsAny<Guid>()))
             .ReturnsAsync([]);
         var service = new PortfolioService(portfolioRepository.Object);
 

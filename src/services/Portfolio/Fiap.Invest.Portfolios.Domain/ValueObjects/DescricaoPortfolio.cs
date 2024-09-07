@@ -1,4 +1,6 @@
-﻿namespace Fiap.Invest.Portfolios.Domain.ValueObjects
+﻿using Delivery.Core.DomainObjects;
+
+namespace Fiap.Invest.Portfolios.Domain.ValueObjects
 {
     public record struct DescricaoPortfolio
     {
@@ -11,7 +13,7 @@
             var inconsistencias = ObterInconsistencias(descricaoPortfolio);
 
             if (!string.IsNullOrWhiteSpace(inconsistencias))
-                throw new InvalidOperationException(inconsistencias);
+                throw new DomainException(inconsistencias);
 
             Valor = descricaoPortfolio?.Trim();
         }

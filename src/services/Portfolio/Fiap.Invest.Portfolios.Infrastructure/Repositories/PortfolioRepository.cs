@@ -1,4 +1,5 @@
 using Delivery.Core.Data;
+using Delivery.Core.Exceptions;
 using Fiap.Invest.Portfolios.Domain.Entities;
 using Fiap.Invest.Portfolios.Domain.Interfaces.Repositories;
 using Fiap.Invest.Portfolios.Infrastructure.Context;
@@ -16,7 +17,7 @@ public sealed class PortfolioRepository : IPortfolioRepository
 
     public IUnitOfWork UnitOfWork => _context;
 
-    public async Task<List<Portfolio>> GetByUsuarioAsync(Guid usuarioId)
+    public async Task<List<Portfolio>> ListarPorUsuarioAsync(Guid usuarioId)
     {
         return await _context.Portfolios.AsNoTracking()
             .Where(p => p.UsuarioId == usuarioId).ToListAsync();
@@ -26,7 +27,7 @@ public sealed class PortfolioRepository : IPortfolioRepository
     {
         var portfolio = await _context.Portfolios.FirstOrDefaultAsync(x => x.Id == id);
         if (portfolio is null)
-            throw new InvalidOperationException($"Nenhum portfólio encontrado com Id \"{id}\".");
+            throw new DatabaseNotFoundException($"Nenhum portfólio encontrado com Id \"{id}\".");
         return portfolio;
     }
 

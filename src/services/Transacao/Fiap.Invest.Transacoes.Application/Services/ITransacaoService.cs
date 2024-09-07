@@ -6,4 +6,5 @@ namespace Fiap.Invest.Transacoes.Application.Services;
 public interface ITransacaoService
 {
     Task<Transacao> FazerTransacaoAsync(TransacaoInputModel model);
+    Task<List<SaldoAtivoDTO>> ObterSaldoAtivoPorPortfolioAsync(Guid portfolioId);
 }

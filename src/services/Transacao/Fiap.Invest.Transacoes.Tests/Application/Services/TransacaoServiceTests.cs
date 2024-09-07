@@ -1,5 +1,7 @@
 ﻿using Delivery.Core.Data;
 using Delivery.Core.DomainObjects;
+using Fiap.Invest.Transacoes.Application.DTOs;
+using Fiap.Invest.Transacoes.Application.InputModels;
 using Fiap.Invest.Transacoes.Application.Services;
 using Fiap.Invest.Transacoes.Domain.DTOs;
 using Fiap.Invest.Transacoes.Domain.Entities;
@@ -22,6 +24,7 @@ public class TransacaoServiceTests
         _mocker = new AutoMocker();
     }
 
+    #region FazerTransacaoAsync
     [Fact(DisplayName = "FazerTransacaoAsync Quando Transação Válida Deve Gravar E Retornar Transação")]
     [Trait("Categoria", "TransacaoService")]
     public async Task FazerTransacaoAsync_QuandoTransacaoValida_DeveGravarERetornarTransacao()
@@ -308,4 +311,29 @@ public class TransacaoServiceTests
         var excecao = await Assert.ThrowsAsync<DomainException>(erro);
         Assert.Equal($"Preço deve ser pelo menos {Transacao.PrecoMinimo}.", excecao.Message);
     }
+    #endregion
+
+    #region ObterSaldoAtivoPorPortfolioAsync
+    [Fact(DisplayName = "ObterSaldoAtivoPorPortfolioAsync Quando Chamado Deve Retornar Lista De SaldoAtivoDTO")]
+    [Trait("Categoria", "TransacaoService")]
+    public async Task ObterSaldoAtivoPorPortfolioAsync_QuandoChamado_DeveRetornarListaDeSaldoAtivoDTO()
+    {
+        // Arrange
+        var portfolioId = Guid.NewGuid();
+        var transacao = new Transacao(portfolioId, Guid.NewGuid(), ETipoTransacao.Compra, 1, 10M);
+
+        var transacaoRepository = _mocker.GetMock<ITransacaoRepository>();
+        transacaoRepository
+            .Setup(t => t.ListarPorPortfolioAsync(It.IsAny<Guid>()))
+            .ReturnsAsync([transacao]);
+
+        var service = _mocker.CreateInstance<TransacaoService>();
+
+        // Act
+        var resultado = await service.ObterSaldoAtivoPorPortfolioAsync(portfolioId);
+
+        // Assert
+        Assert.IsType<List<SaldoAtivoDTO>>(resultado);
+    }
+    #endregion
 }

@@ -1,8 +1,8 @@
-using Delivery.Core.DomainObjects;
-using Fiap.Invest.Transacoes.Domain.Enums;
+﻿using Delivery.Core.DomainObjects;
+using Fiap.Invest.Ativos.Domain.Enums;
 
-namespace Fiap.Invest.Transacoes.Domain.Entities;
-public class Ativo : Entity
+namespace Fiap.Invest.Ativos.Domain.Entities;
+public class Ativo : Entity, IAggregateRoot
 {
     public ETipoAtivo Tipo { get; private set; }
     public string Nome { get; private set; }

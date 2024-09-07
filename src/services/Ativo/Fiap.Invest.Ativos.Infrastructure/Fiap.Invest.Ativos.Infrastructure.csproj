@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fiap.Invest.Transacoes.Application\Fiap.Invest.Transacoes.Application.csproj" />
+    <ProjectReference Include="..\Fiap.Invest.Ativos.Application\Fiap.Invest.Ativos.Application.csproj" />
   </ItemGroup>
 
 </Project>

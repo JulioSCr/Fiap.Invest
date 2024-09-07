@@ -1,17 +1,17 @@
-using Delivery.Core.Data;
+﻿using Delivery.Core.Data;
 using Delivery.Core.Messages;
-using FluentValidation.Results;
-using Fiap.Invest.Transacoes.Domain.Entities;
-using System.Diagnostics.CodeAnalysis;
+using Fiap.Invest.Ativos.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
-namespace Fiap.Invest.Transacoes.Infrastructure.Context;
+namespace Fiap.Invest.Ativos.Infrastructure.Context;
 [ExcludeFromCodeCoverage]
-public sealed class TransacaoContext : DbContext, IUnitOfWork
+public sealed class AtivoContext : DbContext, IUnitOfWork
 {
-    public TransacaoContext(DbContextOptions<TransacaoContext> options) : base(options) { }
+    public AtivoContext(DbContextOptions<AtivoContext> options) : base(options) { }
 
-    public DbSet<Transacao> Transacoes { get; set; }
+    public DbSet<Ativo> Ativos { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -22,7 +22,7 @@ public sealed class TransacaoContext : DbContext, IUnitOfWork
             e => e.GetProperties().Where(p => p.ClrType == typeof(string))))
             property.SetColumnType("varchar(100)");
 
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(TransacaoContext).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AtivoContext).Assembly);
     }
 
     public async Task<bool> Commit()

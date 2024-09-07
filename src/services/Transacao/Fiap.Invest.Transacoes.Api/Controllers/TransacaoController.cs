@@ -1,4 +1,5 @@
 ﻿using Delivery.Core.DomainObjects;
+using Delivery.Core.Exceptions;
 using Delivery.WebAPI.Core.Controllers;
 using Fiap.Invest.Core.Exceptions;
 using Fiap.Invest.Transacoes.Application.InputModels;
@@ -17,7 +18,7 @@ public class TransacaoController : MainController
     }
 
     [HttpPost()]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> FazerTransacaoAsync([FromBody] TransacaoInputModel model)
@@ -25,9 +26,9 @@ public class TransacaoController : MainController
         try
         {
             await _service.FazerTransacaoAsync(model);
-            return CustomResponse();
+            return Created();
         }
-        catch (Exception ex) when (ex is FiapInvestApplicationException || ex is DomainException)
+        catch (Exception ex) when (ex is FiapInvestApplicationException || ex is DomainException || ex is DataNotFoundException)
         {
             AddErrorToStack(ex.ToString());
             return CustomResponse();

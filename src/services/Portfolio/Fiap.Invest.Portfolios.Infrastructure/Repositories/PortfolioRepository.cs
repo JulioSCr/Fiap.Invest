@@ -1,5 +1,6 @@
 using Delivery.Core.Data;
 using Delivery.Core.Exceptions;
+using Fiap.Invest.Core.Exceptions;
 using Fiap.Invest.Portfolios.Domain.Entities;
 using Fiap.Invest.Portfolios.Domain.Interfaces.Repositories;
 using Fiap.Invest.Portfolios.Infrastructure.Context;
@@ -27,7 +28,7 @@ public sealed class PortfolioRepository : IPortfolioRepository
     {
         var portfolio = await _context.Portfolios.FirstOrDefaultAsync(x => x.Id == id);
         if (portfolio is null)
-            throw new DatabaseNotFoundException($"Nenhum portfólio encontrado com Id \"{id}\".");
+            throw new DataNotFoundException($"Nenhum portfólio encontrado com Id \"{id}\".");
         return portfolio;
     }
 

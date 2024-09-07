@@ -26,6 +26,10 @@ public sealed class PortfolioService : IPortfolioService
             throw new ApplicationException($"Portfólio de nome \"{portfolio.Nome}\" já existe.");
 
         await _portfolioRepository.Add(portfolio);
+
+        if (!await _portfolioRepository.UnitOfWork.Commit())
+            throw new ApplicationException("Falha ao persistir transação.");
+
         return portfolio;
     }
 

@@ -1,5 +1,5 @@
 using Delivery.WebAPI.Configuration;
-using Fiap.Invest.Transacoes.Api.Configuration;
+using Fiap.Invest.Ativos.Api.Configuration;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
@@ -12,7 +12,7 @@ public static class Program
 
         builder.Services.AddApiConfiguration(builder.Configuration);
         builder.Services.AddSwaggerConfiguration(new(
-                "Transação API",
+                "Ativo API",
                 "Esta API faz parte do projeto Fiap Invest, projeto em grupo de alunos da FIAP",
                 $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
         builder.Services.RegisterServices();

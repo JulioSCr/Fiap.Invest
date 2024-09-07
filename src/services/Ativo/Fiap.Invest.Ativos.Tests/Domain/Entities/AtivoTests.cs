@@ -1,8 +1,8 @@
-using Fiap.Invest.Transacoes.Domain.Entities;
-using Fiap.Invest.Transacoes.Domain.Enums;
+﻿using Fiap.Invest.Ativos.Domain.Entities;
+using Fiap.Invest.Ativos.Domain.Enums;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Fiap.Invest.Transacoes.Tests.Domain.Entities;
+namespace Fiap.Invest.Ativos.Tests.Domain.Entities;
 [ExcludeFromCodeCoverage]
 public class AtivoTests
 {

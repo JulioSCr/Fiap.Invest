@@ -1,8 +1,8 @@
-using Fiap.Invest.Transacoes.Domain.Entities;
+﻿using Fiap.Invest.Ativos.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Fiap.Invest.Transacoes.Infrastructure.Mappings;
+namespace Fiap.Invest.Ativos.Infrastructure.Mappings;
 public class AtivoMapping : IEntityTypeConfiguration<Ativo>
 {
     public void Configure(EntityTypeBuilder<Ativo> builder)

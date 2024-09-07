@@ -18,7 +18,7 @@ public sealed class PortfolioController : MainController
     }
 
     [HttpPost()]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CriarPortfolioAsync([FromBody] PortfolioInputModel model)
@@ -26,9 +26,9 @@ public sealed class PortfolioController : MainController
         try
         {
             await _service.CriarPortfolioAsync(model);
-            return CustomResponse();
+            return Created();
         }
-        catch (Exception ex) when (ex is FiapInvestApplicationException || ex is DomainException)
+        catch (Exception ex) when (ex is FiapInvestApplicationException || ex is DomainException || ex is DataNotFoundException)
         {
             AddErrorToStack(ex.ToString());
             return CustomResponse();
@@ -45,7 +45,7 @@ public sealed class PortfolioController : MainController
         {
             return CustomResponse(await _service.ListarPorUsuarioAsync(usuarioId));
         }
-        catch (Exception ex) when (ex is FiapInvestApplicationException || ex is DomainException)
+        catch (Exception ex) when (ex is FiapInvestApplicationException || ex is DomainException || ex is DataNotFoundException)
         {
             AddErrorToStack(ex.ToString());
             return CustomResponse();

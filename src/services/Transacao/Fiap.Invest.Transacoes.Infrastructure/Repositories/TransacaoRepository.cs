@@ -1,5 +1,6 @@
 ﻿using Delivery.Core.Data;
 using Delivery.Core.Exceptions;
+using Fiap.Invest.Core.Exceptions;
 using Fiap.Invest.Transacoes.Domain.Entities;
 using Fiap.Invest.Transacoes.Domain.Interfaces.Repositories;
 using Fiap.Invest.Transacoes.Infrastructure.Context;
@@ -21,7 +22,7 @@ public class TransacaoRepository : ITransacaoRepository
     {
         var transacao = await _context.Transacoes.FirstOrDefaultAsync(x => x.Id == id);
         if (transacao is null)
-            throw new DatabaseNotFoundException($"Nenhuma transação encontrada com Id \"{id}\".");
+            throw new DataNotFoundException($"Nenhuma transação encontrada com Id \"{id}\".");
         return transacao;
     }
 

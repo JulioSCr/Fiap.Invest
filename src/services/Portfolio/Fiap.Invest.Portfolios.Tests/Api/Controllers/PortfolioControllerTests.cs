@@ -45,8 +45,7 @@ public class PortfolioControllerTests
         var resultado = await controller.CriarPortfolioAsync(inputData);
 
         // Assert
-        var noContentResult = Assert.IsType<NoContentResult>(resultado);
-        Assert.Equal(204, noContentResult.StatusCode);
+        Assert.IsType<CreatedResult>(resultado);
     }
 
     [Fact(DisplayName = "CriarPortfolioAsync Quando Requisição Falha Domain Deve Retornar BadRequest")]

@@ -4,8 +4,10 @@ using Fiap.Invest.Transacoes.Domain.Interfaces.Clients;
 using Fiap.Invest.Transacoes.Domain.Interfaces.Repositories;
 using Fiap.Invest.Transacoes.Infrastructure.Context;
 using Fiap.Invest.Transacoes.Infrastructure.Repositories;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Fiap.Invest.Transacoes.Api.Configuration;
+[ExcludeFromCodeCoverage]
 public static class DependencyInjectionConfig
 {
     public static void RegisterServices(this IServiceCollection services)

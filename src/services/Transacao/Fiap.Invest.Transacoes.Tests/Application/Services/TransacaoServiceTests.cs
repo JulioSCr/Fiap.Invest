@@ -1,4 +1,5 @@
-﻿using Delivery.Core.DomainObjects;
+﻿using Delivery.Core.Data;
+using Delivery.Core.DomainObjects;
 using Fiap.Invest.Transacoes.Application.Services;
 using Fiap.Invest.Transacoes.Domain.DTOs;
 using Fiap.Invest.Transacoes.Domain.Entities;
@@ -38,7 +39,15 @@ public class TransacaoServiceTests
             Id = model.AtivoId
         };
 
+        var unitOfWork = _mocker.GetMock<IUnitOfWork>();
+        unitOfWork
+            .Setup(u => u.Commit())
+            .ReturnsAsync(true);
+
         var transacaoRepository = _mocker.GetMock<ITransacaoRepository>();
+        transacaoRepository
+            .Setup(t => t.UnitOfWork)
+            .Returns(unitOfWork.Object);
 
         var portfolioClient = _mocker.GetMock<IPortfolioClient>();
         portfolioClient
@@ -58,6 +67,53 @@ public class TransacaoServiceTests
         // Assert
         Assert.IsType<Transacao>(resultado);
         transacaoRepository.Verify(t => t.Add(It.IsAny<Transacao>()), Times.Once);
+    }
+
+    [Fact(DisplayName = "FazerTransacaoAsync Quando Persistência Falha Deve Gravar E Retornar Exceção")]
+    [Trait("Categoria", "TransacaoService")]
+    public async Task FazerTransacaoAsync_QuandoPersistenciaFalha_DeveGravarERetornarExcecao()
+    {
+        // Arrange
+        var model = InputModelTestsFixture.ObterTransacaoInputModelValidoCompra();
+
+        var portfolio = new PortfolioDTO
+        {
+            Id = model.PortfolioId
+        };
+
+        var ativo = new AtivoDTO
+        {
+            Id = model.AtivoId
+        };
+
+        var unitOfWork = _mocker.GetMock<IUnitOfWork>();
+        unitOfWork
+            .Setup(u => u.Commit())
+            .ReturnsAsync(false);
+
+        var transacaoRepository = _mocker.GetMock<ITransacaoRepository>();
+        transacaoRepository
+            .Setup(t => t.UnitOfWork)
+            .Returns(unitOfWork.Object);
+
+        var portfolioClient = _mocker.GetMock<IPortfolioClient>();
+        portfolioClient
+            .Setup(p => p.ListarPortfolioPorUsuario())
+            .ReturnsAsync([portfolio]);
+
+        var ativoClient = _mocker.GetMock<IAtivoClient>();
+        ativoClient
+            .Setup(a => a.ObterAtivoPorIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(ativo);
+
+        var service = _mocker.CreateInstance<TransacaoService>();
+
+        // Act
+        var erro = async () => await service.FazerTransacaoAsync(model);
+
+        // Assert
+        var excecao = await Assert.ThrowsAsync<ApplicationException>(erro);
+        Assert.Equal("Falha ao persistir transação.", excecao.Message);
     }
 
     [Fact(DisplayName = "FazerTransacaoAsync Quando Portfólio Inexistente Deve Retornar Exceção")]
@@ -188,10 +244,19 @@ public class TransacaoServiceTests
             Id = model.AtivoId
         };
 
+        var unitOfWork = _mocker.GetMock<IUnitOfWork>();
+        unitOfWork
+            .Setup(u => u.Commit())
+            .ReturnsAsync(true);
+
         var transacaoRepository = _mocker.GetMock<ITransacaoRepository>();
         transacaoRepository
             .Setup(t => t.ListarPorPortfolioAsync(It.IsAny<Guid>()))
             .ReturnsAsync([transacao]);
+
+        transacaoRepository
+            .Setup(t => t.UnitOfWork)
+            .Returns(unitOfWork.Object);
 
         var portfolioClient = _mocker.GetMock<IPortfolioClient>();
         portfolioClient

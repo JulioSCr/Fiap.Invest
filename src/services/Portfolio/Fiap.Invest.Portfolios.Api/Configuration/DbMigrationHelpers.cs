@@ -1,4 +1,4 @@
-using Fiap.Invest.Portfolios.Infraestructure.Context;
+using Fiap.Invest.Portfolios.Infrastructure.Context;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

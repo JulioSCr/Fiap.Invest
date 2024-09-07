@@ -5,5 +5,6 @@ namespace Fiap.Invest.Portfolios.Domain.Interfaces.Repositories;
 
 public interface IPortfolioRepository : IRepository<Portfolio>
 {
-    public Task<List<Portfolio>> GetByUsuarioAsync(Guid usuarioId);
+    IUnitOfWork UnitOfWork { get; }
+    public Task<List<Portfolio>> ListarPorUsuarioAsync(Guid usuarioId);
 }

@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using Delivery.Core.DomainObjects;
 using Fiap.Invest.Portfolios.Domain.ValueObjects;
 using System.Diagnostics.CodeAnalysis;
 
@@ -28,7 +29,7 @@ namespace Fiap.Invest.Portfolios.Tests.Domain.ValueObjects
             });
 
             // Assert
-            var excecao = Assert.Throws<InvalidOperationException>(erro);
+            var excecao = Assert.Throws<DomainException>(erro);
             Assert.Equal(mensagem, excecao.Message);
         }
 
@@ -47,7 +48,7 @@ namespace Fiap.Invest.Portfolios.Tests.Domain.ValueObjects
             });
 
             // Assert
-            var excecao = Assert.Throws<InvalidOperationException>(erro);
+            var excecao = Assert.Throws<DomainException>(erro);
             Assert.Equal(mensagem, excecao.Message);
         }
 
@@ -66,7 +67,7 @@ namespace Fiap.Invest.Portfolios.Tests.Domain.ValueObjects
             });
 
             // Assert
-            var excecao = Assert.Throws<InvalidOperationException>(erro);
+            var excecao = Assert.Throws<DomainException>(erro);
             Assert.Equal(mensagem, excecao.Message);
         }
 

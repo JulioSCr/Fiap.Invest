@@ -22,6 +22,5 @@ namespace Fiap.Invest.Portfolios.Tests.Domain.Entities
             Assert.IsType<Portfolio>(portfolio);
             Assert.NotNull(portfolio);
         }
-
     }
 }

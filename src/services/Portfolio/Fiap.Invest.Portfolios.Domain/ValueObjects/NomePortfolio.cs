@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using Delivery.Core.DomainObjects;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace Fiap.Invest.Portfolios.Domain.ValueObjects
@@ -14,7 +15,7 @@ namespace Fiap.Invest.Portfolios.Domain.ValueObjects
             var inconsistencias = ObterInconsistencias(nomePortfolio);
 
             if (!string.IsNullOrWhiteSpace(inconsistencias))
-                throw new InvalidOperationException(inconsistencias);
+                throw new DomainException(inconsistencias);
 
             Valor = Formatar(nomePortfolio!);
         }

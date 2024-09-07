@@ -1,7 +1,7 @@
 using Fiap.Invest.Portfolios.Application.Services;
 using Fiap.Invest.Portfolios.Domain.Interfaces.Repositories;
-using Fiap.Invest.Portfolios.Infraestructure.Context;
-using Fiap.Invest.Portfolios.Infraestructure.Repositories;
+using Fiap.Invest.Portfolios.Infrastructure.Context;
+using Fiap.Invest.Portfolios.Infrastructure.Repositories;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Fiap.Invest.Portfolios.Api.Configuration;

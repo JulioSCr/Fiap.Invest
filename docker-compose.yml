@@ -1,0 +1,14 @@
+services:
+  postgres:
+    image: postgres
+    container_name: postgres
+    restart: always
+    volumes:
+      - ./scripts/01-create-database.sql:/docker-entrypoint-initdb.d/01-create-database.sql
+      - ./scripts/02-ativos-init.sql:/docker-entrypoint-initdb.d/02-ativos-init.sql
+      - ./scripts/03-portfolios-init.sql:/docker-entrypoint-initdb.d/03-portfolios-init.sql
+      - ./scripts/04-transacoes-init.sql:/docker-entrypoint-initdb.d/04-transacoes-init.sql
+    environment:
+      POSTGRES_PASSWORD: "PostgresFiapInvestLocal"
+    ports:
+      - 5432:5432

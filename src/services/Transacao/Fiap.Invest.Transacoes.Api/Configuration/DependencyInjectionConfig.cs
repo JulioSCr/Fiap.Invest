@@ -12,8 +12,18 @@ public static class DependencyInjectionConfig
 {
     public static void RegisterServices(this IServiceCollection services)
     {
-        services.AddHttpClient<IAtivoClient, AtivoClient>();
-        services.AddHttpClient<IPortfolioClient, PortfolioClient>();
+        services
+            .AddHttpClient<IAtivoClient, AtivoClient>()
+            .ConfigurePrimaryHttpMessageHandler(o => new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; }
+            });
+        services
+            .AddHttpClient<IPortfolioClient, PortfolioClient>()
+            .ConfigurePrimaryHttpMessageHandler(o => new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; }
+            });
 
         services
             .AddScoped<ITransacaoService, TransacaoService>()

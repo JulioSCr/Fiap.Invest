@@ -4,7 +4,6 @@ using Fiap.Invest.Transacoes.Domain.Entities;
 using Fiap.Invest.Transacoes.Domain.Enums;
 using Fiap.Invest.Transacoes.Domain.Interfaces.Clients;
 using Fiap.Invest.Transacoes.Domain.Interfaces.Repositories;
-using System.Linq;
 
 namespace Fiap.Invest.Transacoes.Application.Services;
 public class TransacaoService : ITransacaoService

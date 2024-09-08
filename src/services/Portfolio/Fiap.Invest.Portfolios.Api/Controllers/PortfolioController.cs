@@ -4,9 +4,11 @@ using Fiap.Invest.Core.Exceptions;
 using Fiap.Invest.Portfolios.Application.DTOs;
 using Fiap.Invest.Portfolios.Application.InputModels;
 using Fiap.Invest.Portfolios.Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fiap.Invest.Portfolios.Api.Controllers;
+[Authorize]
 [Route("api/[Controller]")]
 public sealed class PortfolioController : MainController
 {
@@ -17,19 +19,21 @@ public sealed class PortfolioController : MainController
         _service = service;
     }
 
-    [HttpGet("{usuarioId}")]
+    [HttpGet("Usuario")]
     [ProducesResponseType(typeof(List<PortfolioDTO>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> ListarPortfolioPorUsuario(Guid usuarioId)
+    public async Task<IActionResult> ListarPortfolioPorUsuario()
     {
         try
         {
-            return CustomResponse(await _service.ListarPorUsuarioAsync(usuarioId));
+            return CustomResponse(await _service.ListarPorUsuarioAsync());
         }
         catch (Exception ex) when (ex is FiapInvestApplicationException || ex is DomainException)
         {
-            AddErrorToStack(ex.ToString());
+            AddErrorToStack($"{ex.GetType().Name}: {ex.Message}");
             return CustomResponse();
         }
         catch (DataNotFoundException)
@@ -40,18 +44,20 @@ public sealed class PortfolioController : MainController
 
     [HttpPost()]
     [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CriarPortfolioAsync([FromBody] PortfolioInputModel model)
     {
         try
         {
-            await _service.CriarPortfolioAsync(model);
-            return Created();
+            var portfolio = await _service.CriarPortfolioAsync(model);
+            return Created(portfolio.Id.ToString(), portfolio.Id);
         }
         catch (Exception ex) when (ex is FiapInvestApplicationException || ex is DomainException || ex is DataNotFoundException)
         {
-            AddErrorToStack(ex.ToString());
+            AddErrorToStack($"{ex.GetType().Name}: {ex.Message}");
             return CustomResponse();
         }
     }

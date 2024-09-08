@@ -1,4 +1,5 @@
-﻿using Fiap.Invest.Transacoes.Application.DTOs;
+﻿using Fiap.Invest.Core.Exceptions;
+using Fiap.Invest.Transacoes.Application.DTOs;
 using Fiap.Invest.Transacoes.Application.InputModels;
 using Fiap.Invest.Transacoes.Domain.Entities;
 using Fiap.Invest.Transacoes.Domain.Enums;
@@ -26,25 +27,25 @@ public class TransacaoService : ITransacaoService
         var portfolios = await _portfolioClient.ListarPortfolioPorUsuario();
 
         if (portfolios.TrueForAll(p => p.Id != model.PortfolioId))
-            throw new ApplicationException("Portfólio não encontrado");
+            throw new FiapInvestApplicationException("Portfólio não encontrado");
 
         var ativo = await _ativoClient.ObterAtivoPorIdAsync(model.AtivoId);
 
         if (ativo is null)
-            throw new ApplicationException("Ativo inexistente");
+            throw new FiapInvestApplicationException("Ativo inexistente");
 
         if (model.Tipo == ETipoTransacao.Venda)
         {
             var saldos = await ObterSaldoAtivoPorPortfolioAsync(model.PortfolioId);
             var saldoAtivo = saldos.FirstOrDefault(s => s.AtivoId == model.AtivoId);
 
-            if (saldoAtivo?.Quantidade < model.Quantidade)
-                throw new ApplicationException("Quantidade de ativos no portfólio insuficiente para venda");
+            if (saldoAtivo?.Quantidade < model.Quantidade || saldoAtivo is null)
+                throw new FiapInvestApplicationException("Quantidade de ativos no portfólio insuficiente para venda");
         }
 
         await _transacaoRepository.Add(transacao);
         if (!await _transacaoRepository.UnitOfWork.Commit())
-            throw new ApplicationException("Falha ao persistir transação.");
+            throw new FiapInvestApplicationException("Falha ao persistir transação.");
 
         return transacao;
     }

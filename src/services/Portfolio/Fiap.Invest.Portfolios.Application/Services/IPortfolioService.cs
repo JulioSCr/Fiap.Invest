@@ -6,5 +6,5 @@ namespace Fiap.Invest.Portfolios.Application.Services;
 public interface IPortfolioService
 {
     Task<Portfolio> CriarPortfolioAsync(PortfolioInputModel portfolioInputModel);
-    Task<List<PortfolioDTO>> ListarPorUsuarioAsync(Guid usuarioId);
+    Task<List<PortfolioDTO>> ListarPorUsuarioAsync();
 }

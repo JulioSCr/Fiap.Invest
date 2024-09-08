@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace Fiap.Invest.Transacoes.Api.Extensions;
+namespace Fiap.Invest.Transacoes.Infrastructure.Extensions;
 [ExcludeFromCodeCoverage]
 public class AppClientsSettings : IAppClientsSettings
 {

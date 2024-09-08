@@ -1,3 +1,4 @@
+using Delivery.WebAPI.Core.User;
 using Fiap.Invest.Portfolios.Application.Services;
 using Fiap.Invest.Portfolios.Domain.Interfaces.Repositories;
 using Fiap.Invest.Portfolios.Infrastructure.Context;
@@ -10,9 +11,12 @@ public static class DependencyInjectionConfig
 {
     public static void RegisterServices(this IServiceCollection services)
     {
+        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
         services
             .AddScoped<IPortfolioService, PortfolioService>()
             .AddScoped<IPortfolioRepository, PortfolioRepository>()
+            .AddScoped<IAspNetUser, AspNetUser>()
             .AddScoped<PortfolioContext>();
     }
 }

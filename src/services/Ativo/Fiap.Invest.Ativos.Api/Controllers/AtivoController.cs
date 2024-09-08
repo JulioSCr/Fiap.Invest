@@ -1,12 +1,15 @@
 ﻿using Delivery.Core.DomainObjects;
 using Delivery.WebAPI.Core.Controllers;
+using Delivery.WebAPI.Core.Identity;
 using Fiap.Invest.Ativos.Application.DTOs;
 using Fiap.Invest.Ativos.Application.InputModels;
 using Fiap.Invest.Ativos.Application.Services;
 using Fiap.Invest.Core.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fiap.Invest.Ativos.Api.Controllers;
+[Authorize]
 [Route("api/[Controller]")]
 public class AtivoController : MainController
 {
@@ -17,10 +20,11 @@ public class AtivoController : MainController
         _service = service;
     }
 
+    [AllowAnonymous]
     [HttpGet("{ativoId}")]
     [ProducesResponseType(typeof(AtivoDTO), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ObterAtivoAsync(Guid ativoId)
     {
@@ -32,7 +36,7 @@ public class AtivoController : MainController
         }
         catch (Exception ex) when (ex is FiapInvestApplicationException || ex is DomainException)
         {
-            AddErrorToStack(ex.ToString());
+            AddErrorToStack($"{ex.GetType().Name}: {ex.Message}");
             return CustomResponse();
         }
         catch (DataNotFoundException)
@@ -41,10 +45,11 @@ public class AtivoController : MainController
         }
     }
 
+    [AllowAnonymous]
     [HttpGet()]
     [ProducesResponseType(typeof(PagedResult<AtivoDTO>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ListarAtivosPaginadosAsync([FromQuery] int pageSize, [FromQuery] int pageIndex)
     {
@@ -56,25 +61,28 @@ public class AtivoController : MainController
         }
         catch (Exception ex) when (ex is FiapInvestApplicationException || ex is DomainException || ex is DataNotFoundException)
         {
-            AddErrorToStack(ex.ToString());
+            AddErrorToStack($"{ex.GetType().Name}: {ex.Message}");
             return CustomResponse();
         }
     }
 
+    [ClaimsAuthorize("Usuario", "Admin")]
     [HttpPost()]
     [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CriarAtivoAsync([FromBody] AtivoInputModel model)
     {
         try
         {
-            await _service.AdicionarAtivoAsync(model);
-            return Created();
+            var ativo = await _service.AdicionarAtivoAsync(model);
+            return Created(ativo.Id.ToString(), ativo.Id);
         }
         catch (Exception ex) when (ex is FiapInvestApplicationException || ex is DomainException || ex is DataNotFoundException)
         {
-            AddErrorToStack(ex.ToString());
+            AddErrorToStack($"{ex.GetType().Name}: {ex.Message}");
             return CustomResponse();
         }
     }

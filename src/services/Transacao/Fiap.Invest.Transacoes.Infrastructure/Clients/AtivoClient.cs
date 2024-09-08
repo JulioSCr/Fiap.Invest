@@ -1,9 +1,9 @@
-﻿using Fiap.Invest.Transacoes.Api.Extensions;
-using Fiap.Invest.Transacoes.Domain.DTOs;
+﻿using Fiap.Invest.Transacoes.Domain.DTOs;
 using Fiap.Invest.Transacoes.Domain.Interfaces.Clients;
+using Fiap.Invest.Transacoes.Infrastructure.Extensions;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Fiap.Invest.Transacoes.Api.Clients;
+namespace Fiap.Invest.Transacoes.Infrastructure.Clients;
 [ExcludeFromCodeCoverage]
 public class AtivoClient : Client, IAtivoClient
 {
@@ -17,7 +17,7 @@ public class AtivoClient : Client, IAtivoClient
 
     public async Task<AtivoDTO?> ObterAtivoPorIdAsync(Guid ativoId)
     {
-        var response = await _httpClient.GetAsync($"{ativoId}");
+        var response = await _httpClient.GetAsync($"api/Ativo/{ativoId}");
 
         return await DeserializarObjetoResponse<AtivoDTO>(response);
     }

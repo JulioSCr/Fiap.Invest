@@ -1,0 +1,28 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS restore
+WORKDIR /src
+COPY ["services/Ativo/Fiap.Invest.Ativos.Domain/Fiap.Invest.Ativos.Domain.csproj", "./services/Ativo/Fiap.Invest.Ativos.Domain/"]
+COPY ["services/Ativo/Fiap.Invest.Ativos.Application/Fiap.Invest.Ativos.Application.csproj", "./services/Ativo/Fiap.Invest.Ativos.Application/"]
+COPY ["services/Ativo/Fiap.Invest.Ativos.Infrastructure/Fiap.Invest.Ativos.Infrastructure.csproj", "./services/Ativo/Fiap.Invest.Ativos.Infrastructure/"]
+COPY ["services/Ativo/Fiap.Invest.Ativos.Api/Fiap.Invest.Ativos.Api.csproj", "./services/Ativo/Fiap.Invest.Ativos.Api/"]
+COPY ["building blocks/Fiap.Invest.Core/Fiap.Invest.Core.csproj", "./building blocks/Fiap.Invest.Core/"]
+COPY ["nuget.config", "./"]
+RUN dotnet restore "./services/Ativo/Fiap.Invest.Ativos.Api/Fiap.Invest.Ativos.Api.csproj"
+
+FROM restore AS build
+COPY . .
+RUN dotnet build "./services/Ativo/Fiap.Invest.Ativos.Api/Fiap.Invest.Ativos.Api.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "./services/Ativo/Fiap.Invest.Ativos.Api/Fiap.Invest.Ativos.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+WORKDIR /app
+RUN apt-get update && \
+    apt-get install -y ca-certificates openssl && \
+    rm -rf /var/lib/apt/lists/*
+COPY ["services/Ativo/Certificates/aspnetapp.pfx", "/usr/local/share/aspnetapp.pfx"]
+RUN openssl pkcs12 -in /usr/local/share/aspnetapp.pfx -out /usr/local/share/aspnetapp.pem -nodes -password pass:authsenha && \
+    cp /usr/local/share/aspnetapp.pem /usr/local/share/ca-certificates/aspnetapp.crt && \
+    update-ca-certificates
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "Fiap.Invest.Ativos.Api.dll"]

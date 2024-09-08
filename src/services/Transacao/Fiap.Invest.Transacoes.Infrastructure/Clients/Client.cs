@@ -4,7 +4,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 
-namespace Fiap.Invest.Transacoes.Api.Clients;
+namespace Fiap.Invest.Transacoes.Infrastructure.Clients;
 [ExcludeFromCodeCoverage]
 public abstract class Client
 {

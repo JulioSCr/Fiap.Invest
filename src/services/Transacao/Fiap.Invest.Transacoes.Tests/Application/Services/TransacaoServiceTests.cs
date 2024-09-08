@@ -1,5 +1,6 @@
 ﻿using Delivery.Core.Data;
 using Delivery.Core.DomainObjects;
+using Fiap.Invest.Core.Exceptions;
 using Fiap.Invest.Transacoes.Application.DTOs;
 using Fiap.Invest.Transacoes.Application.InputModels;
 using Fiap.Invest.Transacoes.Application.Services;
@@ -115,7 +116,7 @@ public class TransacaoServiceTests
         var erro = async () => await service.FazerTransacaoAsync(model);
 
         // Assert
-        var excecao = await Assert.ThrowsAsync<ApplicationException>(erro);
+        var excecao = await Assert.ThrowsAsync<FiapInvestApplicationException>(erro);
         Assert.Equal("Falha ao persistir transação.", excecao.Message);
     }
 
@@ -138,7 +139,7 @@ public class TransacaoServiceTests
         var erro = async () => await service.FazerTransacaoAsync(InputModelTestsFixture.ObterTransacaoInputModelValidoCompra());
 
         // Assert
-        var excecao = await Assert.ThrowsAsync<ApplicationException>(erro);
+        var excecao = await Assert.ThrowsAsync<FiapInvestApplicationException>(erro);
         Assert.Equal("Portfólio não encontrado", excecao.Message);
     }
 
@@ -174,7 +175,7 @@ public class TransacaoServiceTests
         var erro = async () => await service.FazerTransacaoAsync(model);
 
         // Assert
-        var excecao = await Assert.ThrowsAsync<ApplicationException>(erro);
+        var excecao = await Assert.ThrowsAsync<FiapInvestApplicationException>(erro);
         Assert.Equal("Ativo inexistente", excecao.Message);
     }
 
@@ -221,7 +222,7 @@ public class TransacaoServiceTests
         var erro = async () => await service.FazerTransacaoAsync(model);
 
         // Assert
-        var excecao = await Assert.ThrowsAsync<ApplicationException>(erro);
+        var excecao = await Assert.ThrowsAsync<FiapInvestApplicationException>(erro);
         Assert.Equal("Quantidade de ativos no portfólio insuficiente para venda", excecao.Message);
     }
 

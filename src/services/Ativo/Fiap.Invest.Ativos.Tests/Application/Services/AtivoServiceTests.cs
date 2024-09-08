@@ -6,6 +6,7 @@ using Fiap.Invest.Ativos.Application.Services;
 using Fiap.Invest.Ativos.Domain.Entities;
 using Fiap.Invest.Ativos.Domain.Enums;
 using Fiap.Invest.Ativos.Domain.Interfaces.Repositories;
+using Fiap.Invest.Core.Exceptions;
 using Moq;
 using Moq.AutoMock;
 using System.Diagnostics.CodeAnalysis;
@@ -116,7 +117,7 @@ public class AtivoServiceTests
         var erro = async() => await service.AdicionarAtivoAsync(new AtivoInputModel());
 
         // Assert
-        var excecao = await Assert.ThrowsAsync<ApplicationException>(erro);
+        var excecao = await Assert.ThrowsAsync<FiapInvestApplicationException>(erro);
         Assert.Equal("Falha ao persistir transação.", excecao.Message);
     }
 }

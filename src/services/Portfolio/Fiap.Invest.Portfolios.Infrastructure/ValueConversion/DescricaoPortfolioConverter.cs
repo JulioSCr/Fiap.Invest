@@ -6,7 +6,7 @@ public class DescricaoPortfolioConverter : ValueConverter<DescricaoPortfolio, st
 {
     public DescricaoPortfolioConverter()
         : base(
-            descricao => descricao.Valor,
+            descricao => descricao.Valor ?? string.Empty,
             str => new DescricaoPortfolio(str)
         ) 
     { }

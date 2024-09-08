@@ -33,19 +33,15 @@ public class InputModelTestsFixture
     public static IEnumerable<object[]> ObterPortfolioInputModelValidos()
     {
         yield return new object[] { new PortfolioInputModel {
-            UsuarioId = Guid.NewGuid(),
             Nome = "Renda variável" } };
         yield return new object[] { new PortfolioInputModel {
-            UsuarioId = Guid.NewGuid(),
             Nome = "Renda variável",
             Descricao = "Portfólio de renda variável" } };
     }
 
     public static IEnumerable<object[]> ObterPortfolioInputModelNomeNuloOuEmBranco()
     {
-        yield return new object[] { new PortfolioInputModel { UsuarioId = Guid.NewGuid() } };
-        yield return new object[] { new PortfolioInputModel {
-            UsuarioId = Guid.NewGuid(),
-            Nome = "                 " } };
+        yield return new object[] { new PortfolioInputModel { } };
+        yield return new object[] { new PortfolioInputModel { Nome = "                 " } };
     }
 }

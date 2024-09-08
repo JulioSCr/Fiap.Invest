@@ -1,0 +1,23 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS restore
+WORKDIR /src
+COPY ["services/Auth/Fiap.Invest.Auth.Domain/Fiap.Invest.Auth.Domain.csproj", "./services/Auth/Fiap.Invest.Auth.Domain/"]
+COPY ["services/Auth/Fiap.Invest.Auth.Application/Fiap.Invest.Auth.Application.csproj", "./services/Auth/Fiap.Invest.Auth.Application/"]
+COPY ["services/Auth/Fiap.Invest.Auth.Infrastructure/Fiap.Invest.Auth.Infrastructure.csproj", "./services/Auth/Fiap.Invest.Auth.Infrastructure/"]
+COPY ["services/Auth/Fiap.Invest.Auth.Api/Fiap.Invest.Auth.Api.csproj", "./services/Auth/Fiap.Invest.Auth.Api/"]
+COPY ["building blocks/Fiap.Invest.Core/Fiap.Invest.Core.csproj", "./building blocks/Fiap.Invest.Core/"]
+COPY ["nuget.config", "./"]
+RUN dotnet restore "./services/Auth/Fiap.Invest.Auth.Api/Fiap.Invest.Auth.Api.csproj"
+
+FROM restore AS build
+COPY . .
+RUN dotnet build "./services/Auth/Fiap.Invest.Auth.Api/Fiap.Invest.Auth.Api.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "./services/Auth/Fiap.Invest.Auth.Api/Fiap.Invest.Auth.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+RUN mkdir -p /app/certificates
+COPY ["services/Auth/Certificates/aspnetapp.pfx", "/app/certificates"]
+ENTRYPOINT ["dotnet", "Fiap.Invest.Auth.Api.dll"]

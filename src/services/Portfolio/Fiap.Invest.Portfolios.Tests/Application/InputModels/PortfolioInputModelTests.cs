@@ -51,7 +51,6 @@ public class PortfolioInputModelTests
         var mensagem = $"O campo {nameof(PortfolioInputModel.Nome)} é inválido para o tipo NomePortfolio. Motivo: Nome do portfólio deve conter no máximo {NomePortfolio.TamanhoMaximo} caracteres.";
         var model = new PortfolioInputModel
         {
-            UsuarioId = Guid.NewGuid(),
             Nome = _faker.Random.AlphaNumeric(NomePortfolio.TamanhoMaximo + 1)
         };
 
@@ -71,7 +70,6 @@ public class PortfolioInputModelTests
         var mensagem = $"O campo {nameof(PortfolioInputModel.Nome)} é inválido para o tipo NomePortfolio. Motivo: Nome do portfólio deve conter no mínimo {NomePortfolio.TamanhoMinimo} caracteres.";
         var model = new PortfolioInputModel
         {
-            UsuarioId = Guid.NewGuid(),
             Nome = _faker.Random.AlphaNumeric(NomePortfolio.TamanhoMinimo - 1)
         };
 
@@ -91,7 +89,6 @@ public class PortfolioInputModelTests
         var mensagem = $"O campo {nameof(PortfolioInputModel.Descricao)} é inválido para o tipo DescricaoPortfolio. Motivo: Descrição deve conter no máximo {DescricaoPortfolio.TamanhoMaximo} caracteres.";
         var model = new PortfolioInputModel
         {
-            UsuarioId = Guid.NewGuid(),
             Nome = "Renda variável",
             Descricao = _faker.Random.AlphaNumeric(DescricaoPortfolio.TamanhoMaximo + 1)
         };

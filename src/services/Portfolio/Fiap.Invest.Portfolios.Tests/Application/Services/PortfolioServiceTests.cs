@@ -1,13 +1,15 @@
+using Delivery.Core.Data;
+using Delivery.WebAPI.Core.User;
+using Fiap.Invest.Core.Exceptions;
 using Fiap.Invest.Portfolios.Application.DTOs;
 using Fiap.Invest.Portfolios.Application.InputModels;
 using Fiap.Invest.Portfolios.Application.Services;
 using Fiap.Invest.Portfolios.Domain.Entities;
-using Fiap.Invest.Portfolios.Domain.ValueObjects;
 using Fiap.Invest.Portfolios.Domain.Interfaces.Repositories;
+using Fiap.Invest.Portfolios.Domain.ValueObjects;
 using Moq;
 using Moq.AutoMock;
 using System.Diagnostics.CodeAnalysis;
-using Delivery.Core.Data;
 
 namespace Fiap.Invest.Portfolios.Tests.Application.Services;
 
@@ -28,7 +30,6 @@ public class PortfolioServiceTests
         // Arrange
         var inputData = new PortfolioInputModel
         {
-            UsuarioId = Guid.NewGuid(),
             Nome = "Renda variável",
             Descricao = "Portfólio para renda variável",
         };
@@ -47,14 +48,18 @@ public class PortfolioServiceTests
             .Setup(repo => repo.UnitOfWork)
             .Returns(unitOfWork.Object);
 
-        var service = new PortfolioService(portfolioRepository.Object);
+        _mocker
+            .GetMock<IAspNetUser>()
+            .Setup(u => u.Name)
+            .Returns(Guid.NewGuid().ToString());
+
+        var service = _mocker.CreateInstance<PortfolioService>();
 
         // Act
         var resultado = await service.CriarPortfolioAsync(inputData);
 
         // Assert
         Assert.IsType<Portfolio>(resultado);
-        Assert.Equal(inputData.UsuarioId, resultado.UsuarioId);
         Assert.Equal(NomePortfolio.Formatar(inputData.Nome), resultado.Nome.Valor);
         Assert.Equal(inputData.Descricao, resultado.Descricao.Valor);
         Assert.NotEqual(Guid.Empty, resultado.Id);
@@ -69,7 +74,6 @@ public class PortfolioServiceTests
         // Arrange
         var inputData = new PortfolioInputModel
         {
-            UsuarioId = Guid.NewGuid(),
             Nome = "Renda variável",
             Descricao = "Portfólio para renda variável",
         };
@@ -88,13 +92,18 @@ public class PortfolioServiceTests
             .Setup(repo => repo.UnitOfWork)
             .Returns(unitOfWork.Object);
 
-        var service = new PortfolioService(portfolioRepository.Object);
+        _mocker
+            .GetMock<IAspNetUser>()
+            .Setup(u => u.Name)
+            .Returns(Guid.NewGuid().ToString());
+
+        var service = _mocker.CreateInstance<PortfolioService>();
 
         // Act
         var erro = (async () => { var resultado = await service.CriarPortfolioAsync(inputData); });
 
         // Assert
-        var excecao = await Assert.ThrowsAsync<ApplicationException>(erro);
+        var excecao = await Assert.ThrowsAsync<FiapInvestApplicationException>(erro);
         Assert.Equal("Falha ao persistir transação.", excecao.Message);
     }
 
@@ -117,13 +126,18 @@ public class PortfolioServiceTests
         portfolioRepository
             .Setup(repo => repo.ListarPorUsuarioAsync(It.IsAny<Guid>()))
             .ReturnsAsync([portfolio]);
-        var service = new PortfolioService(portfolioRepository.Object);
+        var service = _mocker.CreateInstance<PortfolioService>();
+
+        _mocker
+            .GetMock<IAspNetUser>()
+            .Setup(u => u.Name)
+            .Returns(Guid.NewGuid().ToString());
 
         // Act
         var erro = (async () => { var resultado = await service.CriarPortfolioAsync(inputData); });
 
         // Assert
-        var excecao = await Assert.ThrowsAsync<ApplicationException>(erro);
+        var excecao = await Assert.ThrowsAsync<FiapInvestApplicationException>(erro);
         Assert.Equal(mensagem, excecao.Message);
     }
 
@@ -135,10 +149,16 @@ public class PortfolioServiceTests
         portfolioRepository
             .Setup(repo => repo.ListarPorUsuarioAsync(It.IsAny<Guid>()))
             .ReturnsAsync([]);
-        var service = new PortfolioService(portfolioRepository.Object);
+
+        _mocker
+            .GetMock<IAspNetUser>()
+            .Setup(u => u.Name)
+            .Returns(Guid.NewGuid().ToString());
+
+        var service = _mocker.CreateInstance<PortfolioService>();
 
         // Act
-        var portfolios = await service.ListarPorUsuarioAsync(Guid.NewGuid());
+        var portfolios = await service.ListarPorUsuarioAsync();
 
         // Assert
         Assert.IsType<List<PortfolioDTO>>(portfolios);

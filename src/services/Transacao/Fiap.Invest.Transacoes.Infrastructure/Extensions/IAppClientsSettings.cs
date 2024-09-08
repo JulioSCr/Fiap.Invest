@@ -1,4 +1,4 @@
-﻿namespace Fiap.Invest.Transacoes.Api.Extensions;
+﻿namespace Fiap.Invest.Transacoes.Infrastructure.Extensions;
 public interface IAppClientsSettings
 {
     string AtivoUrl { get; }

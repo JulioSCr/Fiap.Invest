@@ -7,6 +7,7 @@ using Fiap.Invest.Portfolios.Application.Services;
 using Fiap.Invest.Portfolios.Domain.Entities;
 using Fiap.Invest.Portfolios.Domain.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Moq;
 using Moq.AutoMock;
 using System.Diagnostics.CodeAnalysis;
@@ -22,15 +23,14 @@ public class PortfolioControllerTests
         _mocker = new AutoMocker();
     }
 
-    [Fact(DisplayName = "CriarPortfolioAsync Quando Requisição Válida Deve Retornar NoContent")]
+    [Fact(DisplayName = "CriarPortfolioAsync Quando Requisição Válida Deve Retornar Created")]
     [Trait("Categoria", "PortfolioController")]
-    public async Task CriarPortfolioAsync_QuandoRequisicaoValida_DeveRetornarNoContent()
+    public async Task CriarPortfolioAsync_QuandoRequisicaoValida_DeveRetornarCreated()
     {
         // Arrange
         var portfolio = new Portfolio(Guid.NewGuid(), new NomePortfolio("Teste"), new DescricaoPortfolio());
         var inputData = new PortfolioInputModel
         {
-            UsuarioId = Guid.NewGuid(),
             Nome = "Renda variável",
             Descricao = "Portfólio para renda variável",
         };
@@ -56,7 +56,6 @@ public class PortfolioControllerTests
         var portfolio = new Portfolio(Guid.NewGuid(), new NomePortfolio("Teste"), new DescricaoPortfolio());
         var inputData = new PortfolioInputModel
         {
-            UsuarioId = Guid.NewGuid(),
             Nome = "Renda variável",
             Descricao = "Portfólio para renda variável",
         };
@@ -83,7 +82,6 @@ public class PortfolioControllerTests
         var portfolio = new Portfolio(Guid.NewGuid(), new NomePortfolio("Teste"), new DescricaoPortfolio());
         var inputData = new PortfolioInputModel
         {
-            UsuarioId = Guid.NewGuid(),
             Nome = "Renda variável",
             Descricao = "Portfólio para renda variável",
         };
@@ -109,12 +107,12 @@ public class PortfolioControllerTests
         // Arrange
         var portfolioService = _mocker.GetMock<IPortfolioService>();
         portfolioService
-            .Setup(service => service.ListarPorUsuarioAsync(It.IsAny<Guid>()))
+            .Setup(service => service.ListarPorUsuarioAsync())
             .ReturnsAsync([]);
         var controller = new PortfolioController(portfolioService.Object);
 
         // Act
-        var resultado = await controller.ListarPortfolioPorUsuario(Guid.NewGuid());
+        var resultado = await controller.ListarPortfolioPorUsuario();
 
         // Assert
         var okObjectResult = Assert.IsType<OkObjectResult>(resultado);
@@ -129,12 +127,12 @@ public class PortfolioControllerTests
         // Arrange
         var portfolioService = _mocker.GetMock<IPortfolioService>();
         portfolioService
-            .Setup(service => service.ListarPorUsuarioAsync(It.IsAny<Guid>()))
+            .Setup(service => service.ListarPorUsuarioAsync())
             .Throws<DomainException>();
         var controller = new PortfolioController(portfolioService.Object);
 
         // Act
-        var resultado = await controller.ListarPortfolioPorUsuario(Guid.NewGuid());
+        var resultado = await controller.ListarPortfolioPorUsuario();
 
         // Assert
         var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(resultado);
@@ -148,12 +146,12 @@ public class PortfolioControllerTests
         // Arrange
         var portfolioService = _mocker.GetMock<IPortfolioService>();
         portfolioService
-            .Setup(service => service.ListarPorUsuarioAsync(It.IsAny<Guid>()))
+            .Setup(service => service.ListarPorUsuarioAsync())
             .Throws<FiapInvestApplicationException>();
         var controller = new PortfolioController(portfolioService.Object);
 
         // Act
-        var resultado = await controller.ListarPortfolioPorUsuario(Guid.NewGuid());
+        var resultado = await controller.ListarPortfolioPorUsuario();
 
         // Assert
         var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(resultado);

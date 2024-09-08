@@ -3,6 +3,7 @@ using Fiap.Invest.Ativos.Application.DTOs;
 using Fiap.Invest.Ativos.Application.InputModels;
 using Fiap.Invest.Ativos.Domain.Entities;
 using Fiap.Invest.Ativos.Domain.Interfaces.Repositories;
+using Fiap.Invest.Core.Exceptions;
 
 namespace Fiap.Invest.Ativos.Application.Services;
 public class AtivoService : IAtivoService
@@ -33,13 +34,15 @@ public class AtivoService : IAtivoService
         };
     }
 
-    public async Task AdicionarAtivoAsync(AtivoInputModel model)
+    public async Task<Ativo> AdicionarAtivoAsync(AtivoInputModel model)
     {
         var ativo = new Ativo(model.Tipo, model.Nome, model.Codigo);
 
         await _ativoRepository.Add(ativo);
 
         if (!await _ativoRepository.UnitOfWork.Commit())
-            throw new ApplicationException("Falha ao persistir transação.");
+            throw new FiapInvestApplicationException("Falha ao persistir transação.");
+
+        return ativo;
     }
 }

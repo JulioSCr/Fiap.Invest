@@ -1,7 +1,11 @@
 using Delivery.WebAPI.Configuration;
 using Fiap.Invest.Ativos.Api.Configuration;
 using System.Diagnostics.CodeAnalysis;
+using System.Net.Security;
+using System.Net;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
+using Microsoft.AspNetCore;
 
 [ExcludeFromCodeCoverage]
 public static class Program
@@ -9,6 +13,8 @@ public static class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
+        builder.WebHost.ConfigureKestrel(options => { });
 
         builder.Services.AddApiConfiguration(builder.Configuration);
         builder.Services.AddSwaggerConfiguration(new(

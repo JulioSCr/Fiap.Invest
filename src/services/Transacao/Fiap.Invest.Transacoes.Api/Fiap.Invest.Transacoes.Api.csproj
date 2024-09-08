@@ -15,7 +15,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0" />
-    <PackageReference Include="WebAPI" Version="2.0.1" />
+    <PackageReference Include="NetDevPack.Security.Jwt.AspNetCore" Version="7.1.3" />
+    
   </ItemGroup>
 
   <ItemGroup>

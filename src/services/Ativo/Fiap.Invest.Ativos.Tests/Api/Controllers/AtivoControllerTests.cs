@@ -258,8 +258,13 @@ public class AtivoControllerTests
         // Arrange
         var model = new AtivoInputModel();
 
-        var ativoService = _mocker.GetMock<IAtivoService>();
-        var controller = new AtivoController(ativoService.Object);
+        var ativo = new Ativo(ETipoAtivo.Titulos, "Teste", "TEST");
+
+        _mocker
+            .GetMock<IAtivoService>()
+            .Setup(s => s.AdicionarAtivoAsync(It.IsAny<AtivoInputModel>()))
+            .ReturnsAsync(ativo);
+        var controller = _mocker.CreateInstance<AtivoController>();
 
         // Act
         var resultado = await controller.CriarAtivoAsync(model);

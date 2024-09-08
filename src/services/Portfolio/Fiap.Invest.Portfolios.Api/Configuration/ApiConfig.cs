@@ -1,4 +1,5 @@
 using Delivery.Core.DatabaseFlavor;
+using Delivery.WebAPI.Core.Identity;
 using Fiap.Invest.Portfolios.Infrastructure.Context;
 using System.Diagnostics.CodeAnalysis;
 
@@ -8,6 +9,8 @@ public static class ApiConfig
 {
     public static void AddApiConfiguration(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddJwtAsyncKeyConfiguration(configuration);
+
         services.ConfigureProviderForContext<PortfolioContext>(ProviderConfiguration.DetectDatabase(configuration));
 
         services.AddControllers();
@@ -40,9 +43,13 @@ public static class ApiConfig
 
         app.UseRouting();
 
+        app.UseAuthConfiguration();
+
         app.UseCors("Total");
 
         app.MapControllers();
+
+        app.UseJwksDiscovery();
 
         app.MapHealthChecks("/healthz");
     }

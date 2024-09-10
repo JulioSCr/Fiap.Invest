@@ -57,6 +57,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fiap.Invest.Auth.Infrastruc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fiap.Invest.Auth.Tests", "src\services\Auth\Fiap.Invest.Auth.Tests\Fiap.Invest.Auth.Tests.csproj", "{4D7734B2-0EDE-45A1-82EC-3A1D034BA7DC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{057090A5-79A5-4707-BC71-91ACFA5BB913}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fiap.Invest.Blazor.WebApp", "src\web\Fiap.Invest.Blazor.WebApp\Fiap.Invest.Blazor.WebApp.csproj", "{692F4F9A-ECCD-4ACC-9C4F-4ED9189F2743}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -147,6 +151,10 @@ Global
 		{4D7734B2-0EDE-45A1-82EC-3A1D034BA7DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D7734B2-0EDE-45A1-82EC-3A1D034BA7DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D7734B2-0EDE-45A1-82EC-3A1D034BA7DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{692F4F9A-ECCD-4ACC-9C4F-4ED9189F2743}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{692F4F9A-ECCD-4ACC-9C4F-4ED9189F2743}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{692F4F9A-ECCD-4ACC-9C4F-4ED9189F2743}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{692F4F9A-ECCD-4ACC-9C4F-4ED9189F2743}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -177,6 +185,7 @@ Global
 		{1E8E1D71-5A54-4D45-9FE4-D6B9B28CAC5C} = {6BE0C48F-F8A2-429D-9D0E-DE3491E2333E}
 		{CE2E2EA5-3960-48E6-BFC0-34B5EBCEB9BC} = {6BE0C48F-F8A2-429D-9D0E-DE3491E2333E}
 		{4D7734B2-0EDE-45A1-82EC-3A1D034BA7DC} = {6BE0C48F-F8A2-429D-9D0E-DE3491E2333E}
+		{692F4F9A-ECCD-4ACC-9C4F-4ED9189F2743} = {057090A5-79A5-4707-BC71-91ACFA5BB913}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {393C0F4D-04CA-442B-B248-563687336E1A}

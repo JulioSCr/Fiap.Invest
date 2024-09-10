@@ -1,4 +1,5 @@
-﻿using Fiap.Invest.Auth.Application.Services;
+﻿using Delivery.WebAPI.Core.User;
+using Fiap.Invest.Auth.Application.Services;
 using Fiap.Invest.Auth.Domain.Interfaces.Repositories;
 using Fiap.Invest.Auth.Infrastructure.Context;
 using Fiap.Invest.Auth.Infrastructure.Repositories;
@@ -15,6 +16,7 @@ public static class DependencyInjectionConfig
         services
             .AddScoped<IAuthService, AuthService>()
             .AddScoped<IRefreshTokenRepository, RefreshTokenRepository>()
+            .AddScoped<IAspNetUser, AspNetUser>()
             .AddScoped<AuthContext>();
     }
 }

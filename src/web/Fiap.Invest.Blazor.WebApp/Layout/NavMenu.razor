@@ -1,0 +1,73 @@
+﻿@using Fiap.Invest.Blazor.WebApp.DTOs.Auth
+@using Fiap.Invest.Blazor.WebApp.Services.Interfaces
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">Fiap Invest Pós Tech</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+        @if (logado)
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="portfolio/cadastro">
+                    <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Portfólios
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="transacao/mercado">
+                    <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Mercado
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="transacao/saldo">
+                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Saldo
+                </NavLink>
+            </div>
+        }
+    </nav>
+</div>
+
+@code {
+    [Inject]
+    private ILocalStorageService LocalStorage { get; set; }
+    [Inject]
+    private IAuthService AuthService { get; set; }
+
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    private bool logado = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (LocalStorage != null)
+        {
+            var token = await LocalStorage.GetItemAsStringAsync("__token");
+            try
+            {
+                var usuario = await AuthService.ObterUsuarioToken(token);
+                logado = !string.IsNullOrWhiteSpace(usuario?.Nome);
+            }
+            catch (Exception)
+            {
+                logado = false;
+            }
+        }
+    }
+}

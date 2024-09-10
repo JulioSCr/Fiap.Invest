@@ -1,0 +1,83 @@
+﻿@page "/login"
+
+@using System.ComponentModel.DataAnnotations
+@using Fiap.Invest.Blazor.WebApp.Services.Interfaces
+@using Fiap.Invest.Blazor.WebApp.InputModels
+@using Fiap.Invest.Blazor.WebApp.Components
+
+@inject NavigationManager NavigationManager
+@inject ILocalStorageService LocalStorage
+@inject IAuthService AuthService
+
+
+<PageTitle>Login</PageTitle>
+
+<h1>Login</h1>
+<div class="row">
+    <div class="col-md-4">
+        <section>
+            <StatusMessage Message="@errorMessage" />
+            <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
+                <DataAnnotationsValidator />
+                <h2>Entre com suas credenciais.</h2>
+                <hr />
+                <ValidationSummary class="text-danger" role="alert" />
+                <div class="form-floating mb-3">
+                    <InputText @bind-Value="Input.Cpf" class="form-control" autocomplete="username" aria-required="true" placeholder="12345678911" />
+                    <label for="cpf" class="form-label">Cpf</label>
+                    <ValidationMessage For="() => Input.Cpf" class="text-danger" />
+                </div>
+                <div class="form-floating mb-3">
+                    <InputText type="password" @bind-Value="Input.Senha" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                    <label for="password">Senha</label>
+                    <ValidationMessage For="() => Input.Senha" class="text-danger" />
+                </div>
+                <div>
+                    <button type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
+                </div>
+                <div>
+                    <p>
+                        <a href="@(NavigationManager.GetUriWithQueryParameters("cadastro", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Crie uma conta</a>
+                    </p>
+                </div>
+            </EditForm>
+        </section>
+    </div>
+</div>
+
+@code {
+    private string? errorMessage;
+
+    [SupplyParameterFromForm]
+    private AutenticacaoInputModel Input { get; set; } = new();
+
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+    public async Task LoginUser()
+    {
+        try
+        {
+            var result = await AuthService.LoginAsync(Input);
+            if (result != null)
+            {
+                await LocalStorage.SetItemAsStringAsync("__token", result.RefreshToken.ToString());
+                await LocalStorage.SetItemAsStringAsync("__jwt", result.AccessToken);
+
+                NavigationManager.NavigateTo("/", true);
+                return;
+            }
+
+            errorMessage = "Error: Tentativa de login inválida.";
+        }
+        catch (Exception)
+        {
+            errorMessage = "Error: Houve um erro não manipulado.";
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await AuthService.LogoutAsync();
+    }
+}

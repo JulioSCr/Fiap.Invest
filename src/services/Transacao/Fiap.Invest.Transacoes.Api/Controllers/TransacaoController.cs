@@ -20,7 +20,7 @@ public class TransacaoController : MainController
     }
 
     [HttpGet("saldo/{portfolioId}")]
-    [ProducesResponseType(typeof(SaldoAtivoDTO), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(List<SaldoAtivoDTO>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]

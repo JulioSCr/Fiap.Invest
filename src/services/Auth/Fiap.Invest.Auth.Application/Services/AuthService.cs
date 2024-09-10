@@ -1,4 +1,5 @@
-﻿using Fiap.Invest.Auth.Application.DTOs;
+﻿using Delivery.WebAPI.Core.User;
+using Fiap.Invest.Auth.Application.DTOs;
 using Fiap.Invest.Auth.Application.Extensions;
 using Fiap.Invest.Auth.Application.InputModels;
 using Fiap.Invest.Auth.Domain.Entities;
@@ -18,6 +19,7 @@ public class AuthService : IAuthService
     private readonly IHttpContextAccessor _contextAccessor;
     private readonly IRefreshTokenRepository _refreshTokenRepository;
     private readonly IAppTokenSettings _appTokenSettings;
+    private readonly IAspNetUser _user;
 
     public AuthService(
         SignInManager<FiapInvestIdentityUser> signInManager,
@@ -25,7 +27,8 @@ public class AuthService : IAuthService
         IJwtService jwksService,
         IHttpContextAccessor contextAccessor,
         IRefreshTokenRepository refreshTokenRepository,
-        IAppTokenSettings appTokenSettings)
+        IAppTokenSettings appTokenSettings,
+        IAspNetUser user)
     {
         _signInManager = signInManager;
         _userManager = userManager;
@@ -33,9 +36,10 @@ public class AuthService : IAuthService
         _contextAccessor = contextAccessor;
         _refreshTokenRepository = refreshTokenRepository;
         _appTokenSettings = appTokenSettings;
+        _user = user;
     }
 
-    public async Task<TokenJwtDto> RegistrarAsync(UsuarioInputModel usuario)
+    public async Task<TokenJwtDTO> RegistrarAsync(UsuarioInputModel usuario)
     {
         var usuarioBusca = await _userManager.FindByNameAsync(usuario.Cpf);
         if (usuarioBusca != null)
@@ -56,7 +60,7 @@ public class AuthService : IAuthService
         return await CriarTokenJwtAsync(usuario.Cpf);
     }
 
-    public async Task<TokenJwtDto> CriarTokenJwtAsync(string cpf)
+    public async Task<TokenJwtDTO> CriarTokenJwtAsync(string cpf)
     {
         var usuario = await _userManager.FindByNameAsync(cpf);
         if (usuario == null)
@@ -84,7 +88,7 @@ public class AuthService : IAuthService
 
         await _refreshTokenRepository.UnitOfWork.Commit();
 
-        return new TokenJwtDto(accessToken, usuario, claims, refreshToken);
+        return new TokenJwtDTO(accessToken, usuario, claims, refreshToken);
     }
 
     public async Task<RefreshTokenDTO?> ObterRedreshTokenAsync(Guid refreshToken)
@@ -100,7 +104,27 @@ public class AuthService : IAuthService
         return new RefreshTokenDTO(token);
     }
 
-    public async Task<TokenJwtDto> AutenticarAsync(AutenticacaoInputModel model)
+    public async Task<UsuarioDTO> DecryptotokenAsync(Guid refreshToken)
+    {
+        var refreshTokenResult = await ObterRedreshTokenAsync(refreshToken);
+
+        if (refreshTokenResult is null || string.IsNullOrWhiteSpace(refreshTokenResult?.Cpf))
+            throw new FiapInvestApplicationException("Erro inesperado, token inválido");
+
+        var usuario = await _userManager.FindByNameAsync(refreshTokenResult.Value.Cpf!);
+
+        if (usuario == null)
+            throw new FiapInvestApplicationException("Usuário não identificado");
+
+        return new UsuarioDTO
+        {
+            Id = Guid.Parse(usuario.Id),
+            Cpf = usuario.UserName ?? string.Empty,
+            Nome = usuario.Nome
+        };
+    }
+
+    public async Task<TokenJwtDTO> AutenticarAsync(AutenticacaoInputModel model)
     {
         var resultado = await _signInManager.PasswordSignInAsync(
             model.Cpf,

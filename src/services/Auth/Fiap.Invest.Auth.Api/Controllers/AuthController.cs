@@ -20,7 +20,7 @@ public class AuthController : MainController
 
     [AllowAnonymous]
     [HttpPost("registrar")]
-    [ProducesResponseType(typeof(TokenJwtDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(TokenJwtDTO), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> RegistrarUsuarioAsync(UsuarioInputModel model)
@@ -38,7 +38,7 @@ public class AuthController : MainController
 
     [AllowAnonymous]
     [HttpPost("autenticar")]
-    [ProducesResponseType(typeof(TokenJwtDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(TokenJwtDTO), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> RegistrarUsuarioAsync(AutenticacaoInputModel model)
@@ -56,7 +56,7 @@ public class AuthController : MainController
 
     [AllowAnonymous]
     [HttpPut("refresh-token")]
-    [ProducesResponseType(typeof(TokenJwtDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(TokenJwtDTO), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> RefreshTokenAsync([FromBody] Guid refreshToken)
@@ -64,6 +64,24 @@ public class AuthController : MainController
         try
         {
             return CustomResponse(await _service.ObterRedreshTokenAsync(refreshToken));
+        }
+        catch (Exception ex) when (ex is FiapInvestApplicationException || ex is DomainException || ex is DataNotFoundException)
+        {
+            AddErrorToStack($"{ex.GetType().Name}: {ex.Message}");
+            return CustomResponse();
+        }
+    }
+
+    [AllowAnonymous]
+    [HttpPost("decryptotoken")]
+    [ProducesResponseType(typeof(UsuarioDTO), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> DecryptotokenAsync([FromBody] Guid refreshToken)
+    {
+        try
+        {
+            return CustomResponse(await _service.DecryptotokenAsync(refreshToken));
         }
         catch (Exception ex) when (ex is FiapInvestApplicationException || ex is DomainException || ex is DataNotFoundException)
         {

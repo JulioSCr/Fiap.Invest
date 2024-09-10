@@ -1,0 +1,33 @@
+﻿@page "/"
+@using Fiap.Invest.Blazor.WebApp.DTOs.Auth
+@using Fiap.Invest.Blazor.WebApp.Services.Interfaces
+@inject ILocalStorageService LocalStorage
+@inject IAuthService AuthService
+@attribute [FiapAuthorize]
+
+<PageTitle>Home</PageTitle>
+
+<h1>Bem vindo, @usuario?.Nome</h1>
+
+Fiap Invest Projeto Pós Tech
+
+@code {
+    private UsuarioDTO? usuario;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (LocalStorage != null)
+        {
+            var token = await LocalStorage.GetItemAsStringAsync("__token");
+
+            try
+            {
+                usuario = await AuthService.ObterUsuarioToken(token);
+            }
+            catch (Exception)
+            {
+                return;
+            }
+        }
+    }
+}

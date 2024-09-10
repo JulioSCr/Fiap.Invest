@@ -1,0 +1,118 @@
+﻿@page "/transacao/saldo"
+@using System.ComponentModel.DataAnnotations
+@using Fiap.Invest.Blazor.WebApp.DTOs.Transacoes
+@using Fiap.Invest.Blazor.WebApp.Services.Interfaces
+@attribute [FiapAuthorize]
+
+<PageTitle>Saldo</PageTitle>
+
+<h1>Saldo</h1>
+<div class="row">
+    <div class="col-md-4">
+        <section>
+            <StatusMessage Message="@errorMessage" />
+            <EditForm Model="Input" method="post" OnValidSubmit="CarregarSaldo" FormName="carregarsaldo">
+                <DataAnnotationsValidator />
+                <h2>Veja o saldo do seu portfólio.</h2>
+                <hr />
+                <ValidationSummary class="text-danger" role="alert" />
+                <div class="form-floating mb-3">
+                    <InputSelect @bind-Value="Input.PortfolioId" class="form-control" autocomplete="username" aria-required="true" placeholder="Portfólio">
+                        <option value="" selected>Selecione um portfólio</option>
+                        @foreach (var portfolio in portfolios)
+                        {
+                            <option value="@portfolio.Key">@portfolio.Value</option>
+                        }
+                    </InputSelect>
+                    <label for="portfolio" class="form-label">Portfólio</label>
+                    <ValidationMessage For="() => Input.PortfolioId" class="text-danger" />
+                </div>
+                <div>
+                    <button type="submit" class="w-100 btn btn-lg btn-primary">Ver saldo</button>
+                </div>
+            </EditForm>
+        </section>
+    </div>
+</div>
+
+
+@if (saldo != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Ativo</th>
+                <th>Quantidade</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var saldoItem in saldo)
+            {
+                <tr>
+                    <td>@saldoItem.Key</td>
+                    <td>@saldoItem.Value</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    [Inject]
+    private IPortfolioService PortfolioService { get; set; }
+    [Inject]
+    private ITransacaoService TransacaoService { get; set; }
+    [Inject]
+    private IAtivoService AtivoService { get; set; }
+
+    private Dictionary<Guid, string> portfolios = new Dictionary<Guid, string>();
+    private string? errorMessage;
+
+    [SupplyParameterFromForm]
+    private PortfolioSelect Input { get; set; } = new();
+
+    private Dictionary<string, int> saldo = new Dictionary<string, int>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CarregarPortfolios();
+    }
+
+    private async Task CarregarPortfolios()
+    {
+        var listaPortfolios = await PortfolioService.ListarAsync();
+        if (listaPortfolios != null)
+        {
+            portfolios = listaPortfolios.ToDictionary(portfolio => portfolio.Id, portfolio => portfolio.Nome);
+        }
+    }
+
+    private async Task CarregarSaldo()
+    {
+        try
+        {
+            var saldoResultado = await TransacaoService.ObterSaldoAsync(Input.PortfolioId);
+            if (saldoResultado.Value != null)
+            {
+                foreach (var item in saldoResultado.Value)
+                {
+                    var ativo = await AtivoService.ObterAsync(item.AtivoId);
+                    if (ativo is null) continue;
+                    saldo.Add(ativo.Nome, item.Quantidade);
+                }
+            }
+            errorMessage = saldoResultado.Key;
+        }
+        catch (Exception)
+        {
+            errorMessage = "Error: Houve um erro não manipulado.";
+        }
+    }
+
+    private class PortfolioSelect
+    {
+        [Required(ErrorMessage = "Informe um portfólio")]
+        [GuidNotEmpty(ErrorMessage = "Informe um portfólio")]
+        public Guid PortfolioId { get; set; }
+    }
+}

@@ -1,0 +1,127 @@
+﻿@page "/transacao/mercado"
+@using Fiap.Invest.Blazor.WebApp.DTOs.Ativos
+@using Fiap.Invest.Blazor.WebApp.InputModels.Portfolios
+@using Fiap.Invest.Blazor.WebApp.InputModels.Transacoes
+@using Fiap.Invest.Blazor.WebApp.Services.Interfaces
+@attribute [FiapAuthorize]
+
+<PageTitle>Mercado</PageTitle>
+
+<h1>Mercado</h1>
+<div class="row">
+    <div class="col-md-4">
+        <section>
+            <StatusMessage Message="@errorMessage" />
+            <EditForm Model="Input" method="post" OnValidSubmit="FazerTransacao" FormName="fazertransacao">
+                <DataAnnotationsValidator />
+                <h2>Faça sua negociação.</h2>
+                <hr />
+                <ValidationSummary class="text-danger" role="alert" />
+                <div class="form-floating mb-3">
+                    <InputSelect @bind-Value="Input.PortfolioId" class="form-control" autocomplete="username" aria-required="true" placeholder="Portfólio">
+                        <option value="" selected>Selecione um portfólio</option>
+                        @foreach (var portfolio in portfolios)
+                        {
+                            <option value="@portfolio.Key">@portfolio.Value</option>
+                        }
+                    </InputSelect>
+                    <label for="portfolio" class="form-label">Portfólio</label>
+                    <ValidationMessage For="() => Input.PortfolioId" class="text-danger" />
+                </div>
+                <div class="form-floating mb-3">
+                    <InputSelect @bind-Value="Input.AtivoId" class="form-control" autocomplete="username" aria-required="true" placeholder="Ativo">
+                        <option value="" selected>Selecione um ativo</option>
+                        @foreach (var ativo in ativos)
+                        {
+                            <option value="@ativo.Key">@ativo.Value</option>
+                        }
+                    </InputSelect>
+                    <label for="portfolio" class="form-label">Ativo</label>
+                    <ValidationMessage For="() => Input.AtivoId" class="text-danger" />
+                </div>
+                <div class="form-floating mb-3">
+                    <InputSelect @bind-Value="Input.Tipo" class="form-control" autocomplete="username" aria-required="true" placeholder="Ativo">
+                        <option value="@ETipoTransacao.Compra">Compra</option>
+                        <option value="@ETipoTransacao.Venda">Venda</option>
+                    </InputSelect>
+                    <label for="portfolio" class="form-label">Tipo transação</label>
+                    <ValidationMessage For="() => Input.Tipo" class="text-danger" />
+                </div>
+                <div class="form-floating mb-3">
+                    <InputNumber @bind-Value="Input.Quantidade" class="form-control" autocomplete="username" aria-required="true" placeholder="Quantidade" />
+                    <label for="cpf" class="form-label">Quantidade</label>
+                    <ValidationMessage For="() => Input.Quantidade" class="text-danger" />
+                </div>
+                <div class="form-floating mb-3">
+                    <InputNumber @bind-Value="Input.Preco" class="form-control" autocomplete="username" aria-required="true" placeholder="Preço" />
+                    <label for="cpf" class="form-label">Preço</label>
+                    <ValidationMessage For="() => Input.Preco" class="text-danger" />
+                </div>
+                <div>
+                    <button type="submit" class="w-100 btn btn-lg btn-primary">Efetuar transação</button>
+                </div>
+            </EditForm>
+        </section>
+    </div>
+</div>
+
+@code {
+    [Inject]
+    private IAtivoService AtivoService { get; set; }
+    [Inject]
+    private IPortfolioService PortfolioService { get; set; }
+    [Inject]
+    private ITransacaoService TransacaoService { get; set; }
+    [Inject]
+    private NavigationManager NavigationManager { get; set; }
+
+    private Dictionary<Guid, string> ativos = new Dictionary<Guid, string>();
+    private Dictionary<Guid, string> portfolios = new Dictionary<Guid, string>();
+
+    private string? errorMessage;
+
+    [SupplyParameterFromForm]
+    private TransacaoInputModel Input { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CarregarAtivos();
+        await CarregarPortfolios();
+    }
+
+    private async Task CarregarAtivos()
+    {
+        var paginadoAtivo = await AtivoService.ListarAsync(100, 1);
+        var listaAtivos = paginadoAtivo?.List?.ToList();
+        if (listaAtivos != null)
+        {
+            ativos = listaAtivos.ToDictionary(ativo => ativo.Id, ativo => ativo.Nome);
+        }
+    }
+
+    private async Task CarregarPortfolios()
+    {
+        var listaPortfolios = await PortfolioService.ListarAsync();
+        if (listaPortfolios != null)
+        {
+            portfolios = listaPortfolios.ToDictionary(portfolio => portfolio.Id, portfolio => portfolio.Nome);
+        }
+    }
+
+    public async Task FazerTransacao()
+    {
+        try
+        {
+            var erros = await TransacaoService.FazerTransacaoAsync(Input);
+            if (string.IsNullOrWhiteSpace(erros))
+            {
+                NavigationManager.NavigateTo("/transacao/saldo", true);
+            }
+            errorMessage = erros;
+        }
+        catch (Exception)
+        {
+            errorMessage = "Error: Houve um erro não manipulado.";
+        }
+    }
+}

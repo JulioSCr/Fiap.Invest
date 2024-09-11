@@ -1,0 +1,60 @@
+﻿@using Fiap.Invest.Blazor.WebApp.DTOs.Auth
+@using Fiap.Invest.Blazor.WebApp.Services.Interfaces
+@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+@inject ILocalStorageService LocalStorage
+@inject IAuthService AuthService
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <p>@usuario?.Nome</p>
+            @if(logado)
+            {
+                <a @onclick="Sair">Sair</a>
+            }
+            @if(!logado)
+            {
+                <a href="@(NavigationManager.GetUriWithQueryParameters("login", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Login</a>
+            }
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+@code {
+    private bool logado = false;
+    private UsuarioDTO? usuario;
+
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+    private async Task Sair()
+    {
+        await AuthService.LogoutAsync();
+        NavigationManager.NavigateTo("/login", true);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (LocalStorage != null)
+        {
+            var token = await LocalStorage.GetItemAsStringAsync("__token");
+            try
+            {
+                usuario = await AuthService.ObterUsuarioToken(token);
+                logado = !string.IsNullOrWhiteSpace(usuario?.Nome);
+            }
+            catch (Exception)
+            {
+                logado = false;
+            }
+        }
+    }
+}

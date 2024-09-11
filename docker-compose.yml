@@ -1,0 +1,74 @@
+services:
+  postgres:
+    image: postgres
+    container_name: postgres
+    restart: always
+    volumes:
+      - ./scripts/01-create-database.sql:/docker-entrypoint-initdb.d/01-create-database.sql
+      - ./scripts/02-ativos-init.sql:/docker-entrypoint-initdb.d/02-ativos-init.sql
+      - ./scripts/03-portfolios-init.sql:/docker-entrypoint-initdb.d/03-portfolios-init.sql
+      - ./scripts/04-transacoes-init.sql:/docker-entrypoint-initdb.d/04-transacoes-init.sql
+      - ./scripts/05-auth-init.sql:/docker-entrypoint-initdb.d/05-auth-init.sql
+    environment:
+      POSTGRES_PASSWORD: "PostgresFiapInvestLocal"
+    ports:
+      - 5432:5432
+
+  auth-api:
+    build:
+      context: ./src
+      dockerfile: DockerfileAuth
+    container_name: auth-api
+    depends_on:
+      - postgres
+    environment:
+      ASPNETCORE_URLS: "https://+;http://+"
+      ASPNETCORE_HTTPS_PORTS: 8081
+      ASPNETCORE_Kestrel__Certificates__Default__Password: "authsenha"
+      ASPNETCORE_Kestrel__Certificates__Default__Path: /app/certificates/aspnetapp.pfx
+      ASPNETCORE_ENVIRONMENT: "Docker"
+    ports:
+      - 8080:80
+      - 8081:443
+# Cancelado pois certificado não permite comunicação com JWKS necessário rodas APIs local e ter executado dotnet dev-certs https --trust
+#   ativo-api:
+#     build:
+#       context: ./src
+#       dockerfile: DockerfileAtivo
+#     container_name: ativo-api
+#     depends_on:
+#       - auth-api
+#     environment:
+#       ASPNETCORE_ENVIRONMENT: "Docker"
+#     ports:
+#       - 8090:8080
+
+#   portfolio-api:
+#     build:
+#       context: ./src
+#       dockerfile: DockerfilePortfolio
+#     container_name: portfolio-api
+#     depends_on:
+#       - auth-api
+#     environment:
+#       ASPNETCORE_ENVIRONMENT: "Docker"
+#     ports:
+#       - 9000:8080
+
+#   transacao-api:
+#     build:
+#       context: ./src
+#       dockerfile: DockerfileTransacao
+#     container_name: transacao-api
+#     depends_on:
+#       - auth-api
+#     environment:
+#       ASPNETCORE_ENVIRONMENT: "Docker"
+#     ports:
+#       - 9010:8080
+#     networks:
+#       - my-network
+
+# networks:
+#   fiap-invest-network:
+#     driver: bridge

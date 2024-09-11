@@ -1,0 +1,70 @@
+﻿@using Fiap.Invest.Blazor.WebApp.DTOs.Auth
+@using Fiap.Invest.Blazor.WebApp.Extensions
+@using Fiap.Invest.Blazor.WebApp.Services.Interfaces
+@using System.Diagnostics
+@using Fiap.Invest.Blazor.WebApp.States
+
+@code {
+    [Parameter]
+    public Type PageType { get; set; }
+
+    [Inject]
+    private ILocalStorageService LocalStorage { get; set; }
+    [Inject]
+    private IAuthService AuthClient { get; set; }
+    [Inject]
+    private NavigationManager Navigation { get; set; }
+
+    private string currentUrl;
+
+    protected override async Task OnInitializedAsync()
+    {
+        currentUrl = Navigation.Uri;
+
+        await AutenticarAsync();
+
+        Navigation.LocationChanged += AutenticarRedirecionamentoAsync;
+    }
+
+    public async void AutenticarRedirecionamentoAsync(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
+    {
+        if (e.Location == currentUrl) return;
+        await AutenticarAsync();
+    }
+
+    public async Task AutenticarAsync()
+    {
+        if (PageType is null) return;
+
+        var fiapAuth = Attribute.IsDefined(PageType, typeof(FiapAuthorizeAttribute));
+
+        if (LocalStorage is null || !fiapAuth) return;
+
+        var token = await LocalStorage.GetItemAsStringAsync("__token");
+
+        if (string.IsNullOrEmpty(token))
+        {
+            Navigation.RedirecionarParaLogin();
+            return;
+        }
+
+        UsuarioDTO? usuario;
+        try
+        {
+            usuario = await AuthClient.ObterUsuarioToken(token);
+        }
+        catch (Exception)
+        {
+            await AuthClient.LogoutAsync()!;
+            Navigation.RedirecionarParaLogin();
+            return;
+        }
+
+        if (usuario is null || string.IsNullOrWhiteSpace(usuario?.Nome))
+        {
+            await AuthClient.LogoutAsync();
+            Navigation.RedirecionarParaLogin();
+            return;
+        }
+    }
+}

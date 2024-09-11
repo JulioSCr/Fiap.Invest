@@ -1,0 +1,65 @@
+﻿@page "/portfolio/cadastro"
+@using Fiap.Invest.Blazor.WebApp.InputModels.Portfolios
+@using Fiap.Invest.Blazor.WebApp.Services.Interfaces
+@inject HttpClient Http
+@attribute [FiapAuthorize]
+
+<PageTitle>Portfólio</PageTitle>
+
+<h1>Portfólio</h1>
+<div class="row">
+    <div class="col-md-4">
+        <section>
+            <StatusMessage Message="@errorMessage" />
+            <EditForm Model="Input" method="post" OnValidSubmit="CadastrarPortfolio" FormName="login">
+                <DataAnnotationsValidator />
+                <h2>Digite os dados do seu novo portfólio</h2>
+                <hr />
+                <ValidationSummary class="text-danger" role="alert" />
+                <div class="form-floating mb-3">
+                    <InputText @bind-Value="Input.Nome" class="form-control" autocomplete="username" aria-required="true" placeholder="Nome do portfólio" />
+                    <label for="cpf" class="form-label">Nome</label>
+                    <ValidationMessage For="() => Input.Nome" class="text-danger" />
+                </div>
+                <div class="form-floating mb-3">
+                    <InputText @bind-Value="Input.Descricao" class="form-control" autocomplete="username" aria-required="true" placeholder="Descrição do portfólio" />
+                    <label for="cpf" class="form-label">Descrição</label>
+                    <ValidationMessage For="() => Input.Descricao" class="text-danger" />
+                </div>
+                <div>
+                    <button type="submit" class="w-100 btn btn-lg btn-primary">Cadastrar</button>
+                </div>
+            </EditForm>
+        </section>
+    </div>
+</div>
+
+@code {
+    [Inject]
+    private IPortfolioService PortfolioService { get; set; }
+    [Inject]
+    private NavigationManager NavigationManager { get; set; }
+
+    private string? errorMessage;
+
+    [SupplyParameterFromForm]
+    private PortfolioInputModel Input { get; set; } = new();
+
+    public async Task CadastrarPortfolio()
+    {
+        try
+        {
+            var sucesso = await PortfolioService.CadastrarAsync(Input);
+            if (sucesso)
+            {
+                NavigationManager.NavigateTo("/transacao/saldo", true);
+                return;
+            }
+            errorMessage = "Error: Serviço indisponível.";
+        }
+        catch (Exception)
+        {
+            errorMessage = "Error: Houve um erro não manipulado.";
+        }
+    }
+}

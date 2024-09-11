@@ -1,0 +1,75 @@
+﻿@page "/cadastro"
+
+@using System.ComponentModel.DataAnnotations
+@using System.Text
+@using System.Text.Encodings.Web
+@using Fiap.Invest.Blazor.WebApp.Components
+@using Fiap.Invest.Blazor.WebApp.InputModels
+@using Fiap.Invest.Blazor.WebApp.Services.Interfaces
+
+@inject NavigationManager NavigationManager
+@inject ILocalStorageService LocalStorage
+@inject IAuthService AuthService
+
+<PageTitle>Cadastro</PageTitle>
+
+<h1>Cadastro</h1>
+
+<div class="row">
+    <div class="col-md-4">
+        <StatusMessage Message="@errorMessage" />
+        <EditForm Model="Input" method="post" OnValidSubmit="RegisterUser" FormName="register">
+            <DataAnnotationsValidator />
+            <h2>Crie uma nova conta.</h2>
+            <hr />
+            <ValidationSummary class="text-danger" role="alert" />
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="Input.Cpf" class="form-control" autocomplete="username" aria-required="true" placeholder="11111111111" />
+                <label for="cpf">Cpf</label>
+                <ValidationMessage For="() => Input.Cpf" class="text-danger" />
+            </div>
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="Input.Nome" class="form-control" autocomplete="username" aria-required="true" placeholder="name" />
+                <label for="name">Nome</label>
+                <ValidationMessage For="() => Input.Nome" class="text-danger" />
+            </div>
+            <div class="form-floating mb-3">
+                <InputText type="password" @bind-Value="Input.Senha" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                <label for="password">Senha</label>
+                <ValidationMessage For="() => Input.Senha" class="text-danger" />
+            </div>
+            <div class="form-floating mb-3">
+                <InputText type="password" @bind-Value="Input.SenhaConfirmacao" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                <label for="confirm-password">Confirmar Senha</label>
+                <ValidationMessage For="() => Input.SenhaConfirmacao" class="text-danger" />
+            </div>
+            <button type="submit" class="w-100 btn btn-lg btn-primary">Cadastrar-se</button>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    private string? errorMessage;
+
+    [SupplyParameterFromForm]
+    private UsuarioInputModel Input { get; set; } = new();
+
+    public async Task RegisterUser(EditContext editContext)
+    {
+        try
+        {
+            var result = await AuthService.CadastrarAsync(Input);
+            if (result != null)
+            {
+                NavigationManager.NavigateTo("/login", true);
+                return;
+            }
+
+            errorMessage = "Error: Cadastro inválido.";
+        }
+        catch (Exception)
+        {
+            errorMessage = "Error: Houve um erro não manipulado.";
+        }
+    }
+}

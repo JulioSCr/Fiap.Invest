@@ -1,0 +1,23 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS restore
+WORKDIR /src
+COPY ["services/Portfolio/Fiap.Invest.Portfolios.Domain/Fiap.Invest.Portfolios.Domain.csproj", "./services/Portfolio/Fiap.Invest.Portfolios.Domain/"]
+COPY ["services/Portfolio/Fiap.Invest.Portfolios.Application/Fiap.Invest.Portfolios.Application.csproj", "./services/Portfolio/Fiap.Invest.Portfolios.Application/"]
+COPY ["services/Portfolio/Fiap.Invest.Portfolios.Infrastructure/Fiap.Invest.Portfolios.Infrastructure.csproj", "./services/Portfolio/Fiap.Invest.Portfolios.Infrastructure/"]
+COPY ["services/Portfolio/Fiap.Invest.Portfolios.Api/Fiap.Invest.Portfolios.Api.csproj", "./services/Portfolio/Fiap.Invest.Portfolios.Api/"]
+COPY ["building blocks/Fiap.Invest.Core/Fiap.Invest.Core.csproj", "./building blocks/Fiap.Invest.Core/"]
+COPY ["nuget.config", "./"]
+RUN dotnet restore "./services/Portfolio/Fiap.Invest.Portfolios.Api/Fiap.Invest.Portfolios.Api.csproj"
+
+FROM restore AS build
+COPY . .
+RUN dotnet build "./services/Portfolio/Fiap.Invest.Portfolios.Api/Fiap.Invest.Portfolios.Api.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "./services/Portfolio/Fiap.Invest.Portfolios.Api/Fiap.Invest.Portfolios.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+EXPOSE 8080
+EXPOSE 8090
+ENTRYPOINT ["dotnet", "Fiap.Invest.Portfolios.Api.dll"]

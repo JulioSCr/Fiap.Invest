@@ -22,10 +22,10 @@ jobs:
         dotnet-version: '8.x' # Substitua pela versão do .NET que você está usando
 
     - name: Restore dependencies
-      run: dotnet restore src/services/Ativo/Fiap.Invest.Ativos.Tests
+      run: dotnet restore rc/services/Ativo/Fiap.Invest.Ativos.Api/Fiap.Invest.Ativos.Api.csproj
 
     - name: Build
-      run: dotnet build src/services/Ativo/Fiap.Invest.Ativos.Tests --no-restore
+      run: dotnet build rc/services/Ativo/Fiap.Invest.Ativos.Api/Fiap.Invest.Ativos.Api.csproj --no-restore
 
     - name: Run tests
-      run: dotnet test src/services/Ativo/Fiap.Invest.Ativos.Tests --no-build --verbosity normal
+      run: dotnet test rc/services/Ativo/Fiap.Invest.Ativos.Api/Fiap.Invest.Ativos.Api.csproj --no-build --verbosity normal

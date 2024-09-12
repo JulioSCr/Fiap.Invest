@@ -25,10 +25,10 @@ jobs:
       run: dotnet nuget locals all --clear
 
     - name: Restore dependencies
-      run: dotnet restore src/Fiap.Invest.sln
+      run: dotnet restore Fiap.Invest.sln
 
     - name: Build
-      run: dotnet build src/Fiap.Invest.sln --no-restore
+      run: dotnet build Fiap.Invest.sln --no-restore
 
     - name: Run tests
-      run: dotnet test src/Fiap.Invest.sln --no-build --verbosity normal
+      run: dotnet test Fiap.Invest.sln --no-build --verbosity normal

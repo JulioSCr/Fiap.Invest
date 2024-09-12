@@ -1,37 +1,31 @@
-name: build and test
+name: .NET Core Tests
 
 on:
   push:
+    branches:
+      - main
   pull_request:
-    branches: [ main ]
-    paths:
-    - '**.cs'
-    - '**.csproj'
-
-env:
-  DOTNET_VERSION: '8.x.x' # The .NET SDK version to use
+    branches:
+      - main
 
 jobs:
-  build-and-test:
-
-    name: build-and-test-${{matrix.os}}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+  build:
+    runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Setup .NET Core
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
+        dotnet-version: '8.x' # Substitua pela versão do .NET que você está usando
 
-    - name: Install dependencies
-      run: dotnet restore
-      
+    - name: Restore dependencies
+      run: dotnet restore src/services
+
     - name: Build
-      run: dotnet build --configuration Release --no-restore
-    
-    - name: Test
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet build src/services --no-restore
+
+    - name: Run tests
+      run: dotnet test src/services --no-build --verbosity normal

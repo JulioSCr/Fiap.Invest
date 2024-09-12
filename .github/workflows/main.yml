@@ -1,25 +1,34 @@
-name: .NET
- 
+name: .NET Core CI
+
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "main" ]
- 
+    branches:
+      - main
+
 jobs:
   build:
- 
     runs-on: ubuntu-latest
- 
+
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: '8.x' # Substitua pela versão do .NET que você está usando
+
+    - name: Clean NuGet cache
+      run: dotnet nuget locals all --clear
+
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore src/Fiap.Invest.sln
+
     - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet build src/Fiap.Invest.sln --no-restore
+
+    - name: Run tests
+      run: dotnet test src/Fiap.Invest.sln --no-build --verbosity normal
